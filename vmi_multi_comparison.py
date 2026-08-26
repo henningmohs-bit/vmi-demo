@@ -256,50 +256,49 @@ def preload_demo_models():
     global UPLOADED_MODELS, NEXT_COLOR_INDEX
 
     for name, folder in DEMO_MODEL_FOLDERS:
-        result_path = folder / 'result'
-        if not result_path.exists():
-            print(f"[PRELOAD] Skipping '{name}': {result_path} not found")
-            continue
-
-        model_files = {}
         try:
+            result_path = folder / 'result'
+            print(f"[PRELOAD] Checking '{name}' at {result_path}", flush=True)
+            if not result_path.exists():
+                print(f"[PRELOAD] Skipping '{name}': {result_path} not found", flush=True)
+                continue
+
+            model_files = {}
             with open(result_path, 'r', encoding='utf-8', errors='ignore') as f:
                 model_files['result'] = f.read()
-        except Exception as e:
-            print(f"[PRELOAD] Could not read result file for '{name}': {e}")
-            continue
 
-        for stl_path in folder.glob('*.stl'):
-            try:
+            for stl_path in folder.glob('*.stl'):
                 with open(stl_path, 'rb') as f:
                     model_files[stl_path.name.lower()] = f.read()
-            except Exception as e:
-                print(f"[PRELOAD] Could not read {stl_path.name} for '{name}': {e}")
 
-        validation = validate_model_upload(model_files)
-        if validation['errors']:
-            print(f"[PRELOAD] '{name}' invalid: {validation['errors']}")
-            continue
+            validation = validate_model_upload(model_files)
+            if validation['errors']:
+                print(f"[PRELOAD] '{name}' invalid: {validation['errors']}", flush=True)
+                continue
 
-        parsed_data = parse_uploaded_model(name, model_files)
+            parsed_data = parse_uploaded_model(name, model_files)
 
-        color = MODEL_COLORS[NEXT_COLOR_INDEX % len(MODEL_COLORS)]
-        NEXT_COLOR_INDEX += 1
+            color = MODEL_COLORS[NEXT_COLOR_INDEX % len(MODEL_COLORS)]
+            NEXT_COLOR_INDEX += 1
 
-        model_key = f"demo_{name.replace(' ', '_')}"
-        UPLOADED_MODELS[model_key] = {
-            'name': name,
-            'color': color,
-            'symbol': 'circle',
-            'data': {'start': parsed_data['start_data'], 'end': parsed_data['end_data']},
-            'trajectories': parsed_data['trajectories'],
-            'stl_data': parsed_data['stl_data'],
-            'has_trajectory': validation['has_trajectory'],
-            'has_stls': len(validation['has_stls']) > 0,
-            'warnings': parsed_data['warnings']
-        }
-        print(f"[PRELOAD] Loaded '{name}': {len(parsed_data['start_data']['ion_n'])} ions, "
-              f"{len(parsed_data['stl_data'])} STL files")
+            model_key = f"demo_{name.replace(' ', '_')}"
+            UPLOADED_MODELS[model_key] = {
+                'name': name,
+                'color': color,
+                'symbol': 'circle',
+                'data': {'start': parsed_data['start_data'], 'end': parsed_data['end_data']},
+                'trajectories': parsed_data['trajectories'],
+                'stl_data': parsed_data['stl_data'],
+                'has_trajectory': validation['has_trajectory'],
+                'has_stls': len(validation['has_stls']) > 0,
+                'warnings': parsed_data['warnings']
+            }
+            print(f"[PRELOAD] Loaded '{name}': {len(parsed_data['start_data']['ion_n'])} ions, "
+                  f"{len(parsed_data['stl_data'])} STL files", flush=True)
+        except Exception as e:
+            import traceback
+            print(f"[PRELOAD] FAILED for '{name}': {e}", flush=True)
+            traceback.print_exc()
 
 
 def parse_uploaded_model(model_name, model_files):
