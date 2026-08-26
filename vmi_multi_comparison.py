@@ -3799,8 +3799,9 @@ def index_root():
     except Exception:
         return 'No viewer available. Generate the HTML first.'
 
-# Runs on import too (required for gunicorn, which never calls main())
+# Runs on import too (required for gunicorn, which never enters the __main__ block below)
 preload_demo_models()
+main()  # regenerates vmi_multi_comparison.html from the current source on every process start
 
 if __name__ == '__main__':
     # PORT env var lets cloud hosts (Render, Railway, etc.) assign the port dynamically
@@ -3814,8 +3815,6 @@ if __name__ == '__main__':
     
     t = threading.Thread(target=run_flask, daemon=True)
     t.start()
-    
-    main()
     
     print("\n" + "=" * 60)
     print("Web interface ready:")
