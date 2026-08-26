@@ -124,9 +124,10 @@ MODEL_COLORS = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#F7DC6F'
 NEXT_COLOR_INDEX = 0
 
 # Demo datasets (trimmed result files, see prepare_demo_data.py) preloaded on startup
+BASE_DIR = Path(__file__).resolve().parent
 DEMO_MODEL_FOLDERS = [
-    ('Previous design', Path('demo_data/previous_design')),
-    ('Slot-free design', Path('demo_data/slotfree_design')),
+    ('Previous design', BASE_DIR / 'demo_data' / 'previous_design'),
+    ('Slot-free design', BASE_DIR / 'demo_data' / 'slotfree_design'),
 ]
 # Electrode colors for 3D viewer (distinct colors for each electrode)
 ELECTRODE_COLORS = [

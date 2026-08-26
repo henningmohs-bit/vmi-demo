@@ -9,7 +9,7 @@ import re
 import shutil
 from pathlib import Path
 
-MAX_IONS = 40
+MAX_IONS = 15
 ION_START_RE = re.compile(r'^Ion\((\d+)\)\s+Event\(')
 
 SOURCES = [
