@@ -122,6 +122,12 @@ UPLOADED_MODELS = {}  # model_key -> {name, color, symbol, data, warnings}
 UPLOADED_MODELS_DIR = Path('uploaded_models')
 MODEL_COLORS = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E2', '#F8B88B', '#A8DADC']
 NEXT_COLOR_INDEX = 0
+
+# Demo datasets (trimmed result files, see prepare_demo_data.py) preloaded on startup
+DEMO_MODEL_FOLDERS = [
+    ('Previous design', Path('demo_data/previous_design')),
+    ('Slot-free design', Path('demo_data/slotfree_design')),
+]
 # Electrode colors for 3D viewer (distinct colors for each electrode)
 ELECTRODE_COLORS = [
     0x3498db,  # Blue - Electrode 1
@@ -238,6 +244,61 @@ def validate_model_upload(model_files):
         validation['has_stls'] = stl_files
     
     return validation
+
+
+def preload_demo_models():
+    """
+    Loads the bundled demo datasets (DEMO_MODEL_FOLDERS) into UPLOADED_MODELS at startup,
+    so conference visitors see data immediately without needing to upload anything.
+    Must be called at module level (not only inside main()) since gunicorn never runs main().
+    """
+    global UPLOADED_MODELS, NEXT_COLOR_INDEX
+
+    for name, folder in DEMO_MODEL_FOLDERS:
+        result_path = folder / 'result'
+        if not result_path.exists():
+            print(f"[PRELOAD] Skipping '{name}': {result_path} not found")
+            continue
+
+        model_files = {}
+        try:
+            with open(result_path, 'r', encoding='utf-8', errors='ignore') as f:
+                model_files['result'] = f.read()
+        except Exception as e:
+            print(f"[PRELOAD] Could not read result file for '{name}': {e}")
+            continue
+
+        for stl_path in folder.glob('*.stl'):
+            try:
+                with open(stl_path, 'rb') as f:
+                    model_files[stl_path.name.lower()] = f.read()
+            except Exception as e:
+                print(f"[PRELOAD] Could not read {stl_path.name} for '{name}': {e}")
+
+        validation = validate_model_upload(model_files)
+        if validation['errors']:
+            print(f"[PRELOAD] '{name}' invalid: {validation['errors']}")
+            continue
+
+        parsed_data = parse_uploaded_model(name, model_files)
+
+        color = MODEL_COLORS[NEXT_COLOR_INDEX % len(MODEL_COLORS)]
+        NEXT_COLOR_INDEX += 1
+
+        model_key = f"demo_{name.replace(' ', '_')}"
+        UPLOADED_MODELS[model_key] = {
+            'name': name,
+            'color': color,
+            'symbol': 'circle',
+            'data': {'start': parsed_data['start_data'], 'end': parsed_data['end_data']},
+            'trajectories': parsed_data['trajectories'],
+            'stl_data': parsed_data['stl_data'],
+            'has_trajectory': validation['has_trajectory'],
+            'has_stls': len(validation['has_stls']) > 0,
+            'warnings': parsed_data['warnings']
+        }
+        print(f"[PRELOAD] Loaded '{name}': {len(parsed_data['start_data']['ion_n'])} ions, "
+              f"{len(parsed_data['stl_data'])} STL files")
 
 
 def parse_uploaded_model(model_name, model_files):
@@ -3666,6 +3727,9 @@ def index_root():
         return send_from_directory(GLOBAL_HTML_DIR, GLOBAL_CURRENT_HTML)
     except Exception:
         return 'No viewer available. Generate the HTML first.'
+
+# Runs on import too (required for gunicorn, which never calls main())
+preload_demo_models()
 
 if __name__ == '__main__':
     # PORT env var lets cloud hosts (Render, Railway, etc.) assign the port dynamically
