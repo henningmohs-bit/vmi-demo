@@ -1602,6 +1602,77 @@ def main():
             align-items: center;
             gap: 8px;
         }
+
+        /* ===== Mobile / Tablet Responsiveness ===== */
+        @media (max-width: 900px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                position: static;
+            }
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            header {
+                padding: 70px 0 15px;
+            }
+            header h1 {
+                font-size: 1.5em;
+            }
+            header p {
+                font-size: 0.9em;
+            }
+            .theme-toggle {
+                top: 12px;
+                right: 10px;
+                transform: none;
+            }
+            .header-toolbar {
+                justify-content: center;
+            }
+            .header-toolbar .tab-btn {
+                font-size: 12px;
+                padding: 10px 12px;
+                flex: 1 1 auto;
+            }
+            .main-grid {
+                gap: 15px;
+            }
+            .sidebar {
+                padding: 14px;
+            }
+            .plot-container, .stats-panel, .stl-viewer-section {
+                padding: 12px;
+            }
+            #stlContainer {
+                height: 280px;
+            }
+            #plotly-container, #deviation-container {
+                height: 360px;
+            }
+            .main-tab-bar {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            .main-tab-btn {
+                flex: 0 0 auto;
+                padding: 10px 14px;
+                font-size: 12px;
+            }
+            .tab-bar {
+                gap: 8px !important;
+            }
+            .stat-name {
+                min-width: 0;
+            }
+            .stat-row {
+                flex-wrap: wrap;
+                gap: 4px;
+            }
+        }
     </style>
 </head>
 <body class="light-mode">
@@ -1619,7 +1690,7 @@ def main():
             </div>
         </header>        
         
-        <div style="display:flex; gap:8px; align-items:center; justify-content:flex-start; margin-top:10px;">
+        <div class="header-toolbar" style="display:flex; gap:8px; align-items:center; justify-content:flex-start; margin-top:10px; flex-wrap: wrap;">
             <button class="tab-btn" onclick="downloadDetectorPositions('png')">&#8659; Download Detektorposition</button>
             <button class="tab-btn" onclick="download3D()">&#9632; Export 3D PNG</button>
         </div>
