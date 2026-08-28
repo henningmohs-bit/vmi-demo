@@ -4,62 +4,115 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VMI Simulation Analysis</title>
+    <script>
+        try {
+            var savedVmiTheme = localStorage.getItem('vmi-theme');
+            if (savedVmiTheme === 'light' || savedVmiTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', savedVmiTheme);
+            }
+        } catch (e) {}
+    </script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         :root {
-            --bg-primary: linear-gradient(135deg, #0d0d1a 0%, #1a1a2e 50%, #16213e 100%);
-            --bg-card: rgba(30, 30, 45, 0.8);
-            --bg-card-hover: rgba(255,255,255,0.08);
-            --bg-input: rgba(255,255,255,0.03);
-            --border-color: rgba(255,255,255,0.08);
-            --text-primary: #e0e0e0;
-            --text-secondary: #888;
-            --text-muted: #aaa;
-            --plot-bg: rgba(25,25,35,0.8);
-            --stl-bg: #15151f;
+            color-scheme: dark;
+            --bg-primary: radial-gradient(circle at 12% 0%, #22254a 0%, #111426 38%, #090b14 100%);
+            --bg-card: rgba(24, 27, 45, 0.88);
+            --bg-card-solid: #181b2d;
+            --bg-card-hover: rgba(255,255,255,0.075);
+            --bg-input: rgba(255,255,255,0.045);
+            --border-color: rgba(255,255,255,0.10);
+            --border-strong: rgba(255,255,255,0.17);
+            --text-primary: #f3f5fb;
+            --text-secondary: #b5bbcc;
+            --text-muted: #cbd0dc;
+            --stl-bg: #11131e;
+            --accent: #6e7ff2;
+            --accent-strong: #7654b3;
+            --success: #23c990;
+            --danger: #f06464;
+            --shadow-card: 0 18px 50px rgba(0,0,0,0.22);
+            --focus-ring: 0 0 0 4px rgba(110,127,242,0.28);
         }
         
         [data-theme="light"] {
-            --bg-primary: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 50%, #d9e2ec 100%);
-            --bg-card: rgba(255, 255, 255, 0.9);
-            --bg-card-hover: rgba(0,0,0,0.05);
-            --bg-input: rgba(0,0,0,0.03);
-            --border-color: rgba(0,0,0,0.1);
-            --text-primary: #1a1a2e;
-            --text-secondary: #555;
-            --text-muted: #666;
-            --plot-bg: rgba(250,250,255,0.9);
-            --stl-bg: #f0f0f5;
+            color-scheme: light;
+            --bg-primary: radial-gradient(circle at 12% 0%, #ffffff 0%, #f2f4f9 42%, #e8edf4 100%);
+            --bg-card: rgba(255, 255, 255, 0.92);
+            --bg-card-solid: #ffffff;
+            --bg-card-hover: rgba(45,55,90,0.055);
+            --bg-input: rgba(63,72,105,0.045);
+            --border-color: rgba(35,43,69,0.11);
+            --border-strong: rgba(35,43,69,0.18);
+            --text-primary: #22263a;
+            --text-secondary: #5f6679;
+            --text-muted: #4a5164;
+            --stl-bg: #f1f2f7;
+            --shadow-card: 0 18px 45px rgba(43,50,77,0.10);
+            --focus-ring: 0 0 0 4px rgba(102,126,234,0.20);
         }
         
         body {
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             background: var(--bg-primary);
+            background-attachment: fixed;
             min-height: 100vh;
             color: var(--text-primary);
-            transition: all 0.3s ease;
+            line-height: 1.5;
+            overflow-x: hidden;
+            transition: background 0.25s ease, color 0.25s ease;
+        }
+        body.drawer-open { overflow: hidden; }
+        button, input { font: inherit; }
+        button { -webkit-tap-highlight-color: transparent; }
+        button:focus-visible, input:focus-visible, label:focus-visible {
+            outline: none;
+            box-shadow: var(--focus-ring);
+        }
+        .icon {
+            width: 18px;
+            height: 18px;
+            flex: 0 0 auto;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.9;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        .visually-hidden {
+            position: absolute !important;
+            width: 1px !important;
+            height: 1px !important;
+            padding: 0 !important;
+            margin: -1px !important;
+            overflow: hidden !important;
+            clip: rect(0, 0, 0, 0) !important;
+            white-space: nowrap !important;
+            border: 0 !important;
         }
         .container {
-            max-width: 1600px;
+            max-width: 1760px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 18px clamp(14px, 2.2vw, 32px) 36px;
         }
         header {
             text-align: center;
-            padding: 30px 0 20px;
+            padding: 24px 110px 18px;
             border-bottom: 1px solid var(--border-color);
-            margin-bottom: 25px;
+            margin-bottom: 14px;
             position: relative;
         }
         header h1 {
-            font-size: 2.2em;
-            font-weight: 300;
-            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+            font-size: clamp(1.75rem, 3vw, 2.65rem);
+            line-height: 1.1;
+            font-weight: 350;
+            background: linear-gradient(90deg, #667eea, #764ba2, #d767c9);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            margin-bottom: 8px;
+            margin-bottom: 7px;
+            letter-spacing: -0.025em;
         }
         header p {
             color: var(--text-secondary);
@@ -74,15 +127,18 @@
             transform: translateY(-50%);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
-        .theme-toggle span {
-            font-size: 1.2em;
+        .theme-label {
+            display: grid;
+            place-items: center;
+            color: var(--text-secondary);
         }
         .toggle-switch {
             position: relative;
-            width: 60px;
-            height: 30px;
+            width: 54px;
+            height: 28px;
+            border-radius: 999px;
         }
         .toggle-switch input {
             opacity: 0;
@@ -100,8 +156,8 @@
         .toggle-slider:before {
             position: absolute;
             content: "";
-            height: 24px;
-            width: 24px;
+            height: 22px;
+            width: 22px;
             left: 3px;
             bottom: 3px;
             background: white;
@@ -112,166 +168,382 @@
         .toggle-switch input:checked + .toggle-slider {
             background: linear-gradient(135deg, #f093fb, #f5576c);
         }
+        .toggle-switch input:focus-visible + .toggle-slider { box-shadow: var(--focus-ring); }
         .toggle-switch input:checked + .toggle-slider:before {
-            transform: translateX(30px);
+            transform: translateX(26px);
         }
+        input[type="range"] { accent-color: var(--accent); }
         
         .main-grid {
-            display: grid;
-            grid-template-columns: 340px 1fr;
-            gap: 25px;
-            align-items: start;
+            display: block;
         }
         .sidebar {
-            background: var(--bg-card);
-            border-radius: 16px;
-            padding: 20px;
-            border: 1px solid var(--border-color);
-            backdrop-filter: blur(10px);
-            position: sticky;
-            top: 20px;
+            position: fixed;
+            inset: 0 auto 0 0;
+            z-index: 1001;
+            width: min(390px, 92vw);
+            height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+            background: var(--bg-card-solid);
+            border: 0;
+            border-right: 1px solid var(--border-color);
+            border-radius: 0 22px 22px 0;
+            box-shadow: 24px 0 70px rgba(11, 14, 29, 0.30);
+            transform: translateX(-104%);
+            visibility: hidden;
+            transition: transform 0.28s cubic-bezier(.22,.8,.25,1), visibility 0.28s;
+            overflow: hidden;
         }
-        .sidebar h3 {
-            font-size: 0.85em;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-secondary);
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--border-color);
+        .sidebar.is-open {
+            transform: translateX(0);
+            visibility: visible;
         }
-        .model-item {
+        .drawer-backdrop {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            background: rgba(7, 10, 23, 0.48);
+            backdrop-filter: blur(4px);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.24s ease, visibility 0.24s;
+        }
+        .drawer-backdrop.is-visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        .drawer-header {
             display: flex;
             align-items: center;
-            padding: 10px 12px;
-            margin: 6px 0;
-            border-radius: 10px;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 22px 20px 17px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .drawer-eyebrow {
+            display: block;
+            margin-bottom: 2px;
+            color: var(--accent);
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            font-weight: 750;
+        }
+        .drawer-header h2 {
+            color: var(--text-primary);
+            font-size: 1.15rem;
+            line-height: 1.25;
+            font-weight: 680;
+        }
+        .drawer-close {
+            width: 42px;
+            height: 42px;
+            display: grid;
+            place-items: center;
+            flex: 0 0 auto;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
             background: var(--bg-input);
-            transition: all 0.2s ease;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+        }
+        .drawer-close:hover {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+            transform: translateY(-1px);
+        }
+        .drawer-body {
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+            overscroll-behavior: contain;
+            padding: 18px 20px 24px;
+        }
+        .drawer-footer {
+            padding: 14px 20px max(16px, env(safe-area-inset-bottom));
+            border-top: 1px solid var(--border-color);
+            background: var(--bg-card-solid);
+            box-shadow: 0 -12px 35px rgba(11,14,29,0.08);
+        }
+        /* Conference-ready model drawer */
+        .upload-card {
+            padding: 14px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(110,127,242,0.46);
+            border-radius: 14px;
+            background: linear-gradient(145deg, rgba(110,127,242,0.085), var(--bg-input));
+        }
+        .section-heading {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 9px;
+            color: var(--accent);
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+        .upload-help {
+            margin-bottom: 12px;
+            color: var(--text-secondary);
+            font-size: 0.74rem;
+            line-height: 1.45;
+        }
+        .upload-help strong { color: var(--text-primary); }
+        .form-label {
+            display: block;
+            margin-bottom: 6px;
+            color: var(--text-secondary);
+            font-size: 0.72rem;
+            font-weight: 650;
+        }
+        .text-input {
+            width: 100%;
+            min-height: 42px;
+            padding: 9px 11px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            background: var(--bg-card-solid);
+            color: var(--text-primary);
+            font-size: 0.78rem;
+        }
+        .text-input::placeholder { color: var(--text-secondary); opacity: 0.72; }
+        .file-picker {
+            display: grid;
+            grid-template-columns: auto minmax(0, 1fr);
+            align-items: center;
+            gap: 9px;
+            min-height: 44px;
+            padding: 5px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            background: var(--bg-card-solid);
+        }
+        .file-picker-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            min-height: 34px;
+            padding: 7px 10px;
+            border-radius: 7px;
+            background: var(--bg-input);
+            color: var(--text-primary);
+            font-size: 0.72rem;
+            font-weight: 650;
+            cursor: pointer;
+        }
+        .file-picker-name {
+            min-width: 0;
+            overflow: hidden;
+            color: var(--text-secondary);
+            font-size: 0.7rem;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .btn-primary, .btn-update {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            border: 0;
+            border-radius: 10px;
+            color: #fff;
+            cursor: pointer;
+            font-weight: 680;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+        }
+        .btn-primary {
+            min-height: 44px;
+            padding: 10px 14px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+            box-shadow: 0 8px 20px rgba(102,126,234,0.18);
+            font-size: 0.78rem;
+        }
+        .btn-primary:hover, .btn-update:hover {
+            transform: translateY(-1px);
+            filter: saturate(1.08);
+        }
+        .btn-update:hover { box-shadow: 0 8px 25px rgba(56, 239, 125, 0.3); }
+        .upload-status {
+            display: none;
+            align-items: flex-start;
+            gap: 8px;
+            margin-top: 10px;
+            padding: 9px 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 9px;
+            background: var(--bg-input);
+            color: var(--text-secondary);
+            font-size: 0.73rem;
+        }
+        .upload-status.is-visible { display: flex; }
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            flex: 0 0 auto;
+            margin-top: 5px;
+            border-radius: 999px;
+            background: var(--accent);
+            box-shadow: 0 0 0 4px rgba(110,127,242,0.13);
+        }
+        .upload-status[data-type="success"] .status-dot { background: var(--success); box-shadow: 0 0 0 4px rgba(35,201,144,0.13); }
+        .upload-status[data-type="error"] .status-dot { background: var(--danger); box-shadow: 0 0 0 4px rgba(240,100,100,0.13); }
+        .upload-status[data-type="loading"] .status-dot { animation: status-pulse 1s ease-in-out infinite; }
+        @keyframes status-pulse { 50% { opacity: 0.35; transform: scale(0.82); } }
+        .model-list {
+            display: grid;
+            gap: 9px;
+            min-height: 48px;
+            padding: 0;
+            border: 0;
+            background: transparent;
+        }
+        .empty-state {
+            padding: 16px 10px;
+            border: 1px dashed var(--border-strong);
+            border-radius: 12px;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            text-align: center;
+        }
+        .model-item {
+            display: grid;
+            align-items: stretch;
+            gap: 9px;
+            padding: 12px;
+            margin: 0;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            background: var(--bg-input);
+            transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
         }
         .model-item:hover {
             background: var(--bg-card-hover);
+            border-color: var(--border-strong);
+            transform: translateY(-1px);
+        }
+        .model-item-main {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+        .model-toggle {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            min-width: 0;
+            flex: 1;
+            color: var(--text-primary);
+            font-weight: 500;
+            cursor: pointer;
         }
         .model-item input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            margin-right: 12px;
-            accent-color: #667eea;
+            width: 19px;
+            height: 19px;
+            flex: 0 0 auto;
+            margin: 0;
+            accent-color: var(--accent);
             cursor: pointer;
         }
-        .model-item label {
-            flex: 1;
-            font-weight: 500;
-            cursor: pointer;
+        .model-color {
+            width: 10px;
+            height: 10px;
+            flex: 0 0 auto;
+            border-radius: 999px;
+            box-shadow: 0 0 0 3px var(--bg-card-solid);
+        }
+        .model-name {
+            min-width: 0;
+            overflow: hidden;
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            font-weight: 680;
+            text-overflow: ellipsis;
         }
         .model-item .btn-3d {
-            padding: 4px 10px;
-            font-size: 11px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            min-height: 34px;
+            padding: 6px 9px;
+            border: 0;
+            border-radius: 8px;
             background: linear-gradient(135deg, #667eea, #764ba2);
-            border: none;
-            border-radius: 6px;
-            color: white;
+            color: #fff;
             cursor: pointer;
-            transition: all 0.2s ease;
-            font-weight: 500;
+            font-size: 0.68rem;
+            font-weight: 650;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
         .model-item .btn-3d:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(102,126,234,0.28);
+        }
+        .model-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            padding-left: 28px;
+        }
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 7px;
+            border-radius: 999px;
+            background: rgba(35,201,144,0.10);
+            color: var(--success);
+            font-size: 0.62rem;
+            font-weight: 700;
+            line-height: 1.35;
+        }
+        .status-pill::before {
+            content: '';
+            width: 5px;
+            height: 5px;
+            border-radius: 999px;
+            background: currentColor;
+        }
+        .status-pill.is-missing {
+            background: rgba(240,100,100,0.09);
+            color: var(--danger);
         }
         .btn-update {
-            width: 100%;
-            padding: 14px;
-            margin-top: 20px;
-            font-size: 14px;
-            font-weight: 600;
-            background: linear-gradient(135deg, #11998e, #38ef7d);
-            border: none;
-            border-radius: 10px;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        .btn-update:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(56, 239, 125, 0.3);
+            min-height: 46px;
+            padding: 12px 14px;
+            margin: 0;
+            background: linear-gradient(135deg, #11998e, #38d982);
+            box-shadow: 0 8px 22px rgba(35,201,144,0.20);
+            font-size: 0.8rem;
+            text-transform: none;
+            letter-spacing: 0;
         }
         .content-area {
             display: flex;
             flex-direction: column;
             gap: 20px;
         }
-        .plot-container {
-            background: var(--bg-card);
-            border-radius: 16px;
-            padding: 20px;
-            border: 1px solid var(--border-color);
-        }
-        .position-plots-row {
-            display: grid;
-            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-            gap: 18px;
-            align-items: start;
-        }
-        .position-plots-row.single {
-            grid-template-columns: minmax(0, 1fr);
-        }
-        .position-plot-cell {
-            min-width: 0;
-        }
-        #plotly-container,
-        #deviation-container {
-            width: 100%;
-            height: 480px;
-        }
-        @media (max-width: 1200px) {
-            .position-plots-row {
-                grid-template-columns: minmax(0, 1fr);
-            }
-        }
-        .plot-title {
-            font-size: 1.1em;
-            font-weight: 500;
-            margin-bottom: 15px;
-            color: var(--text-muted);
-        }
-        .stats-panel {
-            background: var(--bg-card);
-            border-radius: 16px;
-            padding: 20px;
-            border: 1px solid var(--border-color);
-        }
-        .stats-panel h3 {
-            font-size: 0.85em;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-secondary);
-            margin-bottom: 15px;
-        }
-        .stat-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 15px;
-            margin: 5px 0;
-            background: var(--bg-input);
-            border-radius: 8px;
-        }
-        .stat-name {
-            font-weight: 600;
-            min-width: 140px;
-        }
-        .stat-value {
-            font-family: 'SF Mono', 'Monaco', monospace;
-            font-size: 0.9em;
-            color: var(--text-muted);
-        }
+        .plot-container,
         .stl-viewer-section {
             background: var(--bg-card);
             border-radius: 16px;
             padding: 20px;
             border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-card);
+            backdrop-filter: blur(12px);
+        }
+        #plotly-container {
+            width: 100%;
+            height: 480px;
+        }
+        .stl-viewer-section {
             display: none;
             overflow: hidden;
         }
@@ -282,6 +554,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 14px;
             margin-bottom: 15px;
         }
         .stl-viewer-header h3 {
@@ -290,17 +563,23 @@
             color: var(--text-muted);
         }
         .btn-close-3d {
-            padding: 8px 16px;
-            background: rgba(244, 67, 54, 0.8);
-            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            min-height: 40px;
+            padding: 8px 13px;
+            background: rgba(240, 100, 100, 0.12);
+            border: 1px solid rgba(240, 100, 100, 0.28);
             border-radius: 8px;
-            color: white;
+            color: var(--danger);
             cursor: pointer;
-            font-weight: 500;
+            font-weight: 650;
             transition: all 0.2s ease;
         }
         .btn-close-3d:hover {
-            background: #f44336;
+            background: var(--danger);
+            color: #fff;
         }
         #stlContainer {
             width: 100%;
@@ -308,7 +587,9 @@
             border-radius: 10px;
             overflow: hidden;
             background: var(--stl-bg);
+            border: 1px solid var(--border-color);
         }
+        #stlContainer canvas { display: block; width: 100%; height: 100%; touch-action: none; }
         #trajControls {
             display: none;
         }
@@ -321,69 +602,173 @@
         .js-plotly-plot .plotly .modebar-btn path {
             fill: var(--text-secondary) !important;
         }
+
+        /* Header actions */
+        .header-toolbar {
+            position: sticky;
+            top: 10px;
+            z-index: 90;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px;
+            margin: 0 0 18px;
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            background: var(--bg-card);
+            box-shadow: 0 10px 32px rgba(28,34,59,0.10);
+            backdrop-filter: blur(16px);
+        }
+        .toolbar-spacer { flex: 1; }
+        .toolbar-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 42px;
+            padding: 9px 13px;
+            border: 1px solid transparent;
+            border-radius: 10px;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 0.78rem;
+            font-weight: 650;
+            transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+        }
+        .toolbar-button:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--border-color);
+            color: var(--text-primary);
+            transform: translateY(-1px);
+        }
+        .toolbar-button.is-primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+            color: #fff;
+            box-shadow: 0 7px 18px rgba(102,126,234,0.20);
+        }
+        .model-count {
+            min-width: 25px;
+            padding: 2px 6px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.18);
+            color: inherit;
+            font-size: 0.66rem;
+            font-variant-numeric: tabular-nums;
+            text-align: center;
+        }
+
+        .control-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            min-height: 40px;
+            padding: 8px 14px;
+            border: 0;
+            border-radius: 8px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 0.78rem;
+            font-weight: 650;
+        }
+        .control-button.is-play { background: linear-gradient(135deg, var(--accent), var(--accent-strong)); }
+        .control-button.is-reset { background: var(--danger); }
+        .control-button:disabled { opacity: 0.48; cursor: not-allowed; filter: grayscale(0.25); }
+        .control-button .icon-pause { display: none; }
+        .control-button.is-playing .icon-play { display: none; }
+        .control-button.is-playing .icon-pause { display: block; }
+        .time-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            min-width: 108px;
+            padding: 7px 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--bg-input);
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            font-variant-numeric: tabular-nums;
+        }
+        .time-badge strong { color: var(--text-primary); font-weight: 700; }
+        .stl-option {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            color: var(--text-secondary);
+            font-size: 0.76rem;
+            cursor: pointer;
+        }
+        .stl-option input { width: 17px; height: 17px; accent-color: var(--accent); }
+        .stl-header-actions { display: flex; align-items: center; gap: 12px; }
+        .stl-overlay { box-shadow: 0 10px 30px rgba(10,12,25,0.14); border: 1px solid var(--border-color); }
+        #clipControls button { min-height: 32px; }
+        #clipControls input[type="range"], #trajControls input[type="range"], #posTimeScrubber { min-height: 24px; }
+
+        .toast-region {
+            position: fixed;
+            right: 18px;
+            bottom: 18px;
+            z-index: 1200;
+            display: grid;
+            gap: 8px;
+            width: min(360px, calc(100vw - 28px));
+            pointer-events: none;
+        }
+        .toast {
+            padding: 12px 14px;
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--accent);
+            border-radius: 11px;
+            background: var(--bg-card-solid);
+            color: var(--text-primary);
+            box-shadow: var(--shadow-card);
+            font-size: 0.78rem;
+            animation: toast-in 0.22s ease both;
+        }
+        .toast.is-error { border-left-color: var(--danger); }
+        .toast.is-success { border-left-color: var(--success); }
+        @keyframes toast-in { from { opacity: 0; transform: translateY(8px); } }
         
-        /* Tab Bar Styles */
-        .tab-bar {
+        /* Visualization controls and tabs */
+        .tab-bar,
+        .main-tab-bar {
             display: flex;
             gap: 0;
-            margin-bottom: 15px;
             background: var(--bg-input);
             border-radius: 12px;
             padding: 4px;
             border: 1px solid var(--border-color);
         }
-        .tab-btn {
+        .tab-bar { margin-bottom: 15px; }
+        .main-tab-bar { margin-bottom: 20px; }
+        .tab-btn,
+        .main-tab-btn {
             flex: 1;
-            padding: 12px 20px;
             border: none;
             background: transparent;
             color: var(--text-secondary);
-            font-size: 14px;
             font-weight: 500;
             cursor: pointer;
             border-radius: 8px;
             transition: all 0.3s ease;
+        }
+        .tab-btn {
+            padding: 12px 20px;
+            font-size: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
         }
-        .tab-btn:hover {
-            background: var(--bg-card-hover);
-            color: var(--text-primary);
-        }
-        .tab-btn.active {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-        }
-        .tab-btn .tab-icon {
-            font-size: 16px;
-        }
-        
-        /* Main Tab Navigation */
-        .main-tab-bar {
-            display: flex;
-            gap: 0;
-            margin-bottom: 20px;
-            background: var(--bg-input);
-            border-radius: 12px;
-            padding: 4px;
-            border: 1px solid var(--border-color);
-        }
         .main-tab-btn {
-            flex: 1;
             padding: 14px 16px;
-            border: none;
-            background: transparent;
-            color: var(--text-secondary);
             font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: all 0.3s ease;
             text-align: center;
         }
+        .tab-btn:hover,
         .main-tab-btn:hover {
             background: var(--bg-card-hover);
             color: var(--text-primary);
@@ -393,80 +778,92 @@
             color: white;
             box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
         }
-        .main-tab-panel {
-            /* Initially visible for Plotly rendering */
-        }
         .main-tab-panel.hidden {
             display: none;
         }
         .main-tab-panel.active {
             display: block !important;
         }
-        
-        /* Brainrot Mode Styles */
-        .brainrot-toggle {
-            position: absolute;
-            top: 50%;
-            left: 20px;
-            transform: translateY(-50%);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
         /* ===== Mobile / Tablet Responsiveness ===== */
         @media (max-width: 900px) {
-            .main-grid {
-                grid-template-columns: 1fr;
-            }
-            .sidebar {
-                position: static;
-            }
+            .header-toolbar { top: 6px; }
+            .stl-viewer-header { align-items: flex-start; flex-wrap: wrap; }
+            .stl-header-actions { width: 100%; justify-content: space-between; }
         }
         @media (max-width: 768px) {
+            body { background-attachment: scroll; }
             .container {
-                padding: 10px;
+                padding: 8px 10px 24px;
             }
             header {
-                padding: 70px 0 15px;
+                padding: 58px 6px 16px;
+                margin-bottom: 10px;
             }
             header h1 {
-                font-size: 1.5em;
+                font-size: clamp(1.45rem, 7vw, 1.9rem);
             }
             header p {
-                font-size: 0.9em;
+                font-size: 0.82rem;
             }
             .theme-toggle {
-                top: 12px;
-                right: 10px;
+                top: 10px;
+                right: 4px;
                 transform: none;
             }
             .header-toolbar {
-                justify-content: center;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 6px;
+                padding: 6px;
+                margin-bottom: 12px;
+                border-radius: 12px;
             }
-            .header-toolbar .tab-btn {
-                font-size: 12px;
-                padding: 10px 12px;
-                flex: 1 1 auto;
+            .toolbar-button {
+                width: 100%;
+                min-height: 44px;
+                padding: 8px 9px;
+                font-size: 0.72rem;
             }
-            .main-grid {
-                gap: 15px;
-            }
+            #modelDrawerToggle { grid-column: 1 / -1; }
+            .toolbar-spacer { display: none; }
             .sidebar {
-                padding: 14px;
+                width: min(380px, 94vw);
+                border-radius: 0 18px 18px 0;
             }
-            .plot-container, .stats-panel, .stl-viewer-section {
-                padding: 12px;
+            .drawer-header { padding: 17px 15px 14px; }
+            .drawer-body { padding: 14px 15px 20px; }
+            .drawer-footer { padding-left: 15px; padding-right: 15px; }
+            .content-area { gap: 12px; }
+            .plot-container, .stl-viewer-section {
+                padding: 11px;
+                border-radius: 13px;
+            }
+            .stl-viewer-header h3 { font-size: 0.95rem; }
+            .stl-header-actions { gap: 8px; }
+            .stl-option { font-size: 0.7rem; }
+            .btn-close-3d { min-height: 38px; padding: 7px 10px; font-size: 0.72rem; }
+            #clipControls, #trajControls { padding: 10px !important; }
+            #trajControls > div:first-child { gap: 9px !important; }
+            #trajControls > div:first-child > div { min-width: 100% !important; order: 3; }
+            #trajControls > div:first-child > label { margin-left: auto; }
+            #trajIonCount { margin-left: 0 !important; width: 100%; }
+            .control-button { min-height: 42px; }
+            .stl-overlay {
+                max-height: 72%;
+                overflow-y: auto;
+                transform: scale(0.86);
+                transform-origin: top right;
             }
             #stlContainer {
-                height: 280px;
+                height: clamp(280px, 54vh, 390px);
             }
-            #plotly-container, #deviation-container {
-                height: 360px;
+            #plotly-container {
+                height: 400px;
             }
             .main-tab-bar {
                 overflow-x: auto;
                 -webkit-overflow-scrolling: touch;
+                margin-bottom: 12px;
             }
             .main-tab-btn {
                 flex: 0 0 auto;
@@ -475,13 +872,28 @@
             }
             .tab-bar {
                 gap: 8px !important;
+                padding: 7px !important;
             }
-            .stat-name {
-                min-width: 0;
-            }
-            .stat-row {
-                flex-wrap: wrap;
-                gap: 4px;
+            .tab-bar > span:first-child { width: 100%; }
+            #posTimeScrubber { order: 5; flex-basis: 100% !important; }
+            .time-badge { margin-left: auto; }
+            .toast-region { right: 10px; bottom: 10px; }
+        }
+        @media (max-width: 430px) {
+            .toolbar-button span.toolbar-label { white-space: normal; }
+            .stl-header-actions { align-items: center; }
+            .stl-option { max-width: 165px; }
+            .model-meta { padding-left: 0; }
+            .file-picker { grid-template-columns: 1fr; }
+            .file-picker-button { width: 100%; }
+            .file-picker-name { padding: 0 5px 4px; text-align: center; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                scroll-behavior: auto !important;
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
             }
         }
     </style>
@@ -490,48 +902,95 @@
     <div class="container">
         <header>
             <h1 id="mainTitle">VMI Simulation Analysis</h1>
-            <p id="mainSubtitle">Velocity Map Imaging &mdash; Disturbance Effects Comparison</p>
+            <p id="mainSubtitle">Interactive model comparison and ion-trajectory analysis</p>
             <div class="theme-toggle">
-                <span class="theme-label">&#127769;</span>
+                <span class="theme-label" title="Dark theme" aria-hidden="true">
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M20.5 14.2A8.2 8.2 0 0 1 9.8 3.5 8.7 8.7 0 1 0 20.5 14.2Z"/></svg>
+                </span>
                 <label class="toggle-switch">
-                    <input type="checkbox" id="themeToggle" onchange="toggleTheme()" checked>
+                    <input type="checkbox" id="themeToggle" onchange="toggleTheme(true)" aria-label="Use light theme" checked>
                     <span class="toggle-slider"></span>
                 </label>
-                <span class="theme-label">&#9728;</span>
+                <span class="theme-label" title="Light theme" aria-hidden="true">
+                    <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+                </span>
             </div>
         </header>        
         
-        <div class="header-toolbar" style="display:flex; gap:8px; align-items:center; justify-content:flex-start; margin-top:10px; flex-wrap: wrap;">
-            <button class="tab-btn" onclick="downloadDetectorPositions('png')">&#8659; Download Detektorposition</button>
-            <button class="tab-btn" onclick="download3D()">&#9632; Export 3D PNG</button>
+        <div class="header-toolbar" aria-label="Viewer actions">
+            <button type="button" class="toolbar-button is-primary" id="modelDrawerToggle" onclick="toggleModelDrawer()" aria-controls="modelDrawer" aria-expanded="false">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+                <span class="toolbar-label">Models</span>
+                <span class="model-count" id="modelCountBadge" aria-label="No models loaded">0</span>
+            </button>
+            <span class="toolbar-spacer" aria-hidden="true"></span>
+            <button type="button" class="toolbar-button" onclick="downloadDetectorPositions('png')">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7.5 10.5 12 15l4.5-4.5M4 20h16"/></svg>
+                <span class="toolbar-label">Export detector plot</span>
+            </button>
+            <button type="button" class="toolbar-button" onclick="download3D()">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z M4.4 7.7 12 12l7.6-4.3M12 12v9"/></svg>
+                <span class="toolbar-label">Export 3D view</span>
+            </button>
         </div>
 
+        <div class="drawer-backdrop" id="modelDrawerBackdrop" onclick="closeModelDrawer()" aria-hidden="true"></div>
+
         <div class="main-grid">
-            <aside class="sidebar">
-                <h3>Model Selection</h3>
-                 
-                <!-- MODEL UPLOAD SECTION -->
-                <div style="background: var(--bg-input); padding: 12px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #667eea;">
-                    <h4 style="margin: 0 0 10px; color: #667eea; font-size: 13px; font-weight: 600;">Load Model Folder</h4>
-                    <div style="background: var(--bg-card); padding: 10px; border-radius: 6px; margin-bottom: 10px; border: 1px solid var(--border-color);">
-                        <p style="margin: 0; color: var(--text-secondary); font-size: 11px;">
-                            Select a folder containing: <strong style="color: var(--text-primary);">result</strong> file (required) + optional: trajectory_data, electrode*.stl
-                        </p>
+            <aside class="sidebar" id="modelDrawer" aria-hidden="true" aria-labelledby="modelDrawerTitle">
+                <div class="drawer-header">
+                    <div>
+                        <span class="drawer-eyebrow">Comparison setup</span>
+                        <h2 id="modelDrawerTitle">Model selection</h2>
                     </div>
-                    <div style="display: flex; gap: 5px; margin-bottom: 10px; flex-wrap: wrap;">
-                        <input type="text" id="modelNameInput" placeholder="Model name (auto-detected)" style="flex: 1; min-width: 120px; padding: 6px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-primary); font-size: 11px;">
-                        <input type="file" id="modelFolderInput" webkitdirectory directory mozdirectory style="flex: 1; min-width: 120px; padding: 6px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); color: var(--text-secondary); font-size: 10px;">
+                    <button type="button" class="drawer-close" onclick="closeModelDrawer()" aria-label="Close model selection">
+                        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+                    </button>
+                </div>
+
+                <div class="drawer-body">
+                    <!-- MODEL UPLOAD SECTION -->
+                    <section class="upload-card" aria-labelledby="uploadHeading">
+                        <h3 class="section-heading" id="uploadHeading">
+                            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7.5h6l2-2h10v13H3v-11Z"/><path d="M12 16V9M9.5 11.5 12 9l2.5 2.5"/></svg>
+                            Load model folder
+                        </h3>
+                        <p class="upload-help">Choose a folder containing a <strong>result</strong> file. Trajectory data and <strong>electrode*.stl</strong> files are optional.</p>
+
+                        <label class="form-label" for="modelNameInput">Model name</label>
+                        <input class="text-input" type="text" id="modelNameInput" placeholder="Detected from folder name">
+
+                        <div class="file-picker">
+                            <input class="visually-hidden" type="file" id="modelFolderInput" webkitdirectory directory mozdirectory>
+                            <label class="file-picker-button" for="modelFolderInput" tabindex="0">
+                                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7.5h6l2-2h10v13H3v-11Z"/></svg>
+                                Choose folder
+                            </label>
+                            <span class="file-picker-name" id="modelFolderLabel">No folder selected</span>
+                        </div>
+
+                        <button type="button" class="btn-primary" onclick="handleModelUpload()">
+                            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M7.5 8.5 12 4l4.5 4.5M4 20h16"/></svg>
+                            Load folder
+                        </button>
+                        <div id="uploadStatus" class="upload-status" role="status" aria-live="polite">
+                            <span class="status-dot" aria-hidden="true"></span>
+                            <div><span id="uploadStatusMessage"></span><div id="uploadStatusDetails"></div></div>
+                        </div>
+                    </section>
+
+                    <!-- UPLOADED MODELS LIST -->
+                    <div id="modelSelectionList" class="model-list">
+                        <p class="empty-state">No models loaded yet.</p>
                     </div>
-                    <button onclick="handleModelUpload()" style="width: 100%; padding: 8px; background: #667eea; border: none; border-radius: 4px; color: white; cursor: pointer; font-weight: 600; font-size: 12px;">Load Folder</button>
-                    <div id="uploadStatus" style="display: none; margin-top: 8px; padding: 8px; border-radius: 4px; font-size: 11px;"></div>
                 </div>
-                 
-                <!-- UPLOADED MODELS LIST -->
-                <div id="modelSelectionList" style="background: var(--bg-input); padding: 10px; border-radius: 10px; min-height: 40px; border: 1px solid var(--border-color);">
-                    <p style="color: var(--text-secondary); margin: 0; font-size: 11px;">No models uploaded yet...</p>
+
+                <div class="drawer-footer">
+                    <button type="button" class="btn-update" onclick="applyModelSelection()">
+                        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.2 4.2L19 7"/></svg>
+                        Apply selection
+                    </button>
                 </div>
-                 
-                <button class="btn-update" onclick="updateVisibility()" style="margin-top: 10px;">Update Plot</button>
             </aside>
 
             
@@ -539,14 +998,17 @@
                 <div class="stl-viewer-section active" id="stlSection">
                     <div class="stl-viewer-header">
                         <h3 id="stlTitle">3D Model Viewer</h3>
-                        <div style="display: flex; align-items: center; gap: 15px;">
-                            <label style="display: flex; align-items: center; gap: 6px; color: var(--text-secondary); font-size: 12px;">
+                        <div class="stl-header-actions">
+                            <label class="stl-option">
                                 <input type="checkbox" id="trajShowTrajectories" checked onchange="toggleTrajectories()"> Show Trajectories
                             </label>
-                            <button class="btn-close-3d" onclick="closeSTLViewer()">Close</button>
+                            <button type="button" class="btn-close-3d" onclick="closeSTLViewer()">
+                                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+                                Close
+                            </button>
                         </div>
                     </div>
-                    <div id="stlContainer" style="height: 420px; display: flex; align-items: center; justify-content: center; color: #666; font-size: 13px;">
+                    <div id="stlContainer" style="display: flex; align-items: center; justify-content: center; color: var(--text-secondary); font-size: 13px;">
                         No model loaded &mdash; upload a folder with STL files to see the 3D view
                     </div>
                     
@@ -554,28 +1016,36 @@
                     <div id="clipControls" style="margin-top: 12px; padding: 12px; background: var(--bg-input); border-radius: 10px; border: 1px solid var(--border-color);">
                         <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
                             <strong style="color: var(--text-primary); font-size: 12px;">Section Planes</strong>
+                            <button onclick="toggleGridVisibility()" style="padding: 4px 8px; background: rgba(100,100,100,0.3); border: 1px solid var(--border-color); border-radius: 4px; color: var(--text-secondary); cursor: pointer; font-size: 10px;">Grid</button>
                             <button onclick="resetClipping()" style="margin-left: auto; padding: 4px 10px; background: rgba(100,100,100,0.3); border: 1px solid var(--border-color); border-radius: 4px; color: var(--text-secondary); cursor: pointer; font-size: 10px;">Reset</button>
                         </div>
                         <div style="display: grid; grid-template-columns: 50px 1fr 50px; gap: 6px; align-items: center;">
                             <span style="color: #ef5350; font-size: 11px; font-weight: 500;">X:</span>
-                            <input type="range" id="clipX" min="-250" max="250" value="250" style="width: 100%; cursor: pointer;" oninput="updateClipping()">
-                            <span id="clipXLabel" style="color: var(--text-secondary); font-size: 10px;">Off</span>
+                            <input type="range" id="clipX" min="-100" max="100" value="0" style="width: 100%; cursor: pointer;" oninput="updateClipping()">
+                            <span id="clipXLabel" style="color: var(--text-secondary); font-size: 10px;">0mm</span>
                             
                             <span style="color: #66bb6a; font-size: 11px; font-weight: 500;">Y:</span>
                             <input type="range" id="clipY" min="-100" max="100" value="100" style="width: 100%; cursor: pointer;" oninput="updateClipping()">
                             <span id="clipYLabel" style="color: var(--text-secondary); font-size: 10px;">Off</span>
                             
                             <span style="color: #42a5f5; font-size: 11px; font-weight: 500;">Z:</span>
-                            <input type="range" id="clipZ" min="-100" max="100" value="0" style="width: 100%; cursor: pointer;" oninput="updateClipping()">
-                            <span id="clipZLabel" style="color: var(--text-secondary); font-size: 10px;">0mm</span>
+                            <input type="range" id="clipZ" min="-100" max="100" value="100" style="width: 100%; cursor: pointer;" oninput="updateClipping()">
+                            <span id="clipZLabel" style="color: var(--text-secondary); font-size: 10px;">Off</span>
                         </div>
                     </div>
                     
                     <!-- Trajectory Animation Controls -->
                     <div id="trajControls" style="margin-top: 12px; padding: 12px; background: var(--bg-input); border-radius: 10px; border: 1px solid var(--border-color);">
                         <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
-                            <button id="trajPlayBtn" onclick="toggleTrajectoryPlay()" style="padding: 8px 20px; background: linear-gradient(135deg, #667eea, #764ba2); border: none; border-radius: 6px; color: white; cursor: pointer; font-weight: 500; font-size: 13px;">&#9654; Play</button>
-                            <button onclick="resetTrajectory()" style="padding: 8px 15px; background: rgba(244,67,54,0.8); border: none; border-radius: 6px; color: white; cursor: pointer; font-size: 12px;">Reset</button>
+                            <button type="button" id="trajPlayBtn" class="control-button is-play" onclick="toggleTrajectoryPlay()">
+                                <svg class="icon icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7V5Z"/></svg>
+                                <svg class="icon icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14"/></svg>
+                                <span id="trajPlayLabel">Play</span>
+                            </button>
+                            <button type="button" class="control-button is-reset" onclick="resetTrajectory()">
+                                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.3-5.7L4 8.6M4 4v4.6h4.6"/></svg>
+                                Reset
+                            </button>
                             <div style="flex: 1; display: flex; align-items: center; gap: 8px; min-width: 200px;">
                                 <span style="color: var(--text-secondary); font-size: 11px;">TOF:</span>
                                 <input type="range" id="trajScrubber" min="0" max="100" value="0" style="flex: 1; cursor: pointer;" oninput="scrubTrajectory()">
@@ -600,43 +1070,35 @@
                 </div>
                 
                 <!-- Main Visualization Tabs -->
-                <div class="main-tab-bar">
-                    <button class="main-tab-btn active" id="main-tab-positions" onclick="switchMainTab('positions')">Positions</button>
-                        <button class="main-tab-btn" id="main-tab-tof" onclick="switchMainTab('tof')" style="display:none;">Time of Flight</button>
-                        <button class="main-tab-btn" id="main-tab-radial" onclick="switchMainTab('radial')" style="display:none;">Radial Distribution</button>
-                        <button class="main-tab-btn" id="main-tab-energy" onclick="switchMainTab('energy')" style="display:none;">Kinetic Energy</button>
+                <div class="main-tab-bar" id="mainTabBar">
+                    <button type="button" class="main-tab-btn active" id="main-tab-positions" onclick="switchMainTab('positions')">Positions</button>
+                        <button type="button" class="main-tab-btn" id="main-tab-tof" onclick="switchMainTab('tof')" style="display:none;">Time of Flight</button>
+                        <button type="button" class="main-tab-btn" id="main-tab-radial" onclick="switchMainTab('radial')" style="display:none;">Radial Distribution</button>
+                        <button type="button" class="main-tab-btn" id="main-tab-energy" onclick="switchMainTab('energy')" style="display:none;">Kinetic Energy</button>
                 </div>
                 
                 <!-- Positions Panel -->
                 <div class="main-tab-panel active" id="panel-positions">
                     <div class="plot-container">
                         <div class="tab-bar" style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-                            <span style="font-size: 12px; color: var(--text-secondary); font-weight: 500;">Time:</span>
-                            <button class="tab-btn" id="btnJumpStart" onclick="jumpToTime(0)" style="padding: 6px 12px;">
-                                &#9198; Start
+                            <span style="font-size: 12px; color: var(--text-secondary); font-weight: 600;">Flight time</span>
+                            <button type="button" class="tab-btn" id="btnJumpStart" onclick="jumpToTime(0)" style="padding: 7px 11px;">
+                                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5v14M18 6l-8 6 8 6V6Z"/></svg>
+                                Start
                             </button>
                             <input type="range" id="posTimeScrubber" min="0" max="1000" value="0" 
                                    style="flex: 1; min-width: 150px; cursor: pointer;" 
                                    oninput="scrubPositionTime()">
-                            <button class="tab-btn" id="btnJumpEnd" onclick="jumpToTime(-1)" style="padding: 6px 12px;">
-                                End &#9197;
+                            <button type="button" class="tab-btn" id="btnJumpEnd" onclick="jumpToTime(-1)" style="padding: 7px 11px;">
+                                End
+                                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 5v14M6 6l8 6-8 6V6Z"/></svg>
                             </button>
-                            <span id="posTimeLabel" style="font-size: 12px; color: var(--text-secondary); padding: 6px 12px; background: var(--bg-input); border-radius: 6px; min-width: 80px; text-align: center;">
-                                &#9201; 0.000 &micro;s
+                            <span id="posTimeLabel" class="time-badge">
+                                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3.5 2"/></svg>
+                                <strong id="posTimeValue">0.000 &micro;s</strong>
                             </span>
                         </div>
-                        <div id="position-plots-row" class="position-plots-row single">
-                            <div class="position-plot-cell">
-                                <div id="plotly-container"></div>
-                            </div>
-                            <div class="position-plot-cell" id="deviation-cell" style="display: none;">
-                                <div id="deviation-container"></div>
-                            </div>
-
-                        </div>
-                    </div>
-                    <div class="stats-panel" style="margin-top: 15px;">
-                        <h3>Deviation Statistics (vs Ideal Reference)</h3>
+                        <div id="plotly-container"></div>
 
                     </div>
                 </div>
@@ -664,6 +1126,7 @@
             </div>
         </div>
     </div>
+    <div class="toast-region" id="toastRegion" aria-live="polite" aria-atomic="true"></div>
 
     <!-- Plotly for detector position plots -->
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
@@ -684,6 +1147,146 @@ var modelColors = {'normal': '#00d4ff', 'gaps': 'red', 'holes': 'blue', 'cable':
     var stlScene, stlCamera, stlRenderer, stlControls;
     var clipPlaneX, clipPlaneY, clipPlaneZ;
     var clippingEnabled = false;
+    var lastDrawerFocus = null;
+
+    function setModelDrawerOpen(open) {
+        var drawer = document.getElementById('modelDrawer');
+        var backdrop = document.getElementById('modelDrawerBackdrop');
+        var toggle = document.getElementById('modelDrawerToggle');
+        if (!drawer || !backdrop || !toggle) return;
+
+        if (open) {
+            lastDrawerFocus = document.activeElement;
+            drawer.classList.add('is-open');
+            backdrop.classList.add('is-visible');
+            drawer.setAttribute('aria-hidden', 'false');
+            toggle.setAttribute('aria-expanded', 'true');
+            drawer.inert = false;
+            document.body.classList.add('drawer-open');
+            window.setTimeout(function() {
+                var closeButton = drawer.querySelector('.drawer-close');
+                if (closeButton) closeButton.focus();
+            }, 60);
+        } else {
+            drawer.classList.remove('is-open');
+            backdrop.classList.remove('is-visible');
+            drawer.setAttribute('aria-hidden', 'true');
+            toggle.setAttribute('aria-expanded', 'false');
+            drawer.inert = true;
+            document.body.classList.remove('drawer-open');
+            if (lastDrawerFocus && typeof lastDrawerFocus.focus === 'function') {
+                lastDrawerFocus.focus();
+            }
+        }
+    }
+
+    function toggleModelDrawer() {
+        var drawer = document.getElementById('modelDrawer');
+        setModelDrawerOpen(!(drawer && drawer.classList.contains('is-open')));
+    }
+
+    function closeModelDrawer() {
+        setModelDrawerOpen(false);
+    }
+
+    function applyModelSelection() {
+        updateVisibility();
+        closeModelDrawer();
+    }
+
+    function updateModelSelectionSummary() {
+        var list = document.getElementById('modelSelectionList');
+        var badge = document.getElementById('modelCountBadge');
+        if (!list || !badge) return;
+        var boxes = Array.from(list.querySelectorAll('input[type="checkbox"]'));
+        var selected = boxes.filter(function(box) { return box.checked; }).length;
+        badge.textContent = boxes.length ? selected + '/' + boxes.length : '0';
+        badge.setAttribute('aria-label', boxes.length
+            ? selected + ' of ' + boxes.length + ' models selected'
+            : 'No models loaded');
+    }
+
+    function showToast(message, type) {
+        var region = document.getElementById('toastRegion');
+        if (!region) return;
+        var toast = document.createElement('div');
+        toast.className = 'toast' + (type ? ' is-' + type : '');
+        toast.setAttribute('role', type === 'error' ? 'alert' : 'status');
+        toast.textContent = message;
+        region.appendChild(toast);
+        window.setTimeout(function() {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateY(6px)';
+            window.setTimeout(function() { toast.remove(); }, 220);
+        }, 3600);
+    }
+
+    function setUploadStatus(type, message, details) {
+        var status = document.getElementById('uploadStatus');
+        var messageEl = document.getElementById('uploadStatusMessage');
+        var detailsEl = document.getElementById('uploadStatusDetails');
+        if (!status || !messageEl || !detailsEl) return;
+        status.dataset.type = type || 'info';
+        status.classList.add('is-visible');
+        messageEl.textContent = message || '';
+        detailsEl.replaceChildren();
+        if (Array.isArray(details) && details.length) {
+            var list = document.createElement('ul');
+            list.style.cssText = 'margin: 5px 0 0 16px; color: var(--text-secondary);';
+            details.forEach(function(detail) {
+                var item = document.createElement('li');
+                item.textContent = detail;
+                list.appendChild(item);
+            });
+            detailsEl.appendChild(list);
+        }
+    }
+
+    function setTrajectoryPlayButton(isPlaying) {
+        var button = document.getElementById('trajPlayBtn');
+        var label = document.getElementById('trajPlayLabel');
+        if (!button || !label) return;
+        button.classList.toggle('is-playing', Boolean(isPlaying));
+        label.textContent = isPlaying ? 'Pause' : 'Play';
+        button.setAttribute('aria-label', isPlaying ? 'Pause trajectory animation' : 'Play trajectory animation');
+    }
+
+    function updateMainTabBarVisibility() {
+        var bar = document.getElementById('mainTabBar');
+        if (!bar) return;
+        var buttons = Array.from(bar.querySelectorAll('.main-tab-btn'));
+        var visibleButtons = buttons.filter(function(button) {
+            return window.getComputedStyle(button).display !== 'none';
+        });
+        bar.hidden = visibleButtons.length <= 1;
+    }
+
+    function resizeSTLViewer() {
+        var container = document.getElementById('stlContainer');
+        if (!container || !stlRenderer || !stlCamera || !container.clientWidth || !container.clientHeight) return;
+        stlCamera.aspect = container.clientWidth / container.clientHeight;
+        stlCamera.updateProjectionMatrix();
+        stlRenderer.setSize(container.clientWidth, container.clientHeight, false);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var drawer = document.getElementById('modelDrawer');
+        if (drawer) drawer.inert = true;
+        updateMainTabBarVisibility();
+
+        var savedTheme = null;
+        try { savedTheme = localStorage.getItem('vmi-theme'); } catch (e) {}
+        var themeToggle = document.getElementById('themeToggle');
+        if (themeToggle && (savedTheme === 'light' || savedTheme === 'dark')) {
+            themeToggle.checked = savedTheme === 'light';
+        }
+        toggleTheme(false);
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') closeModelDrawer();
+        });
+        window.addEventListener('resize', resizeSTLViewer);
+    });
     
     function base64ToArrayBuffer(base64) {
         var binaryString = atob(base64);
@@ -713,30 +1316,41 @@ var modelColors = {'normal': '#00d4ff', 'gaps': 'red', 'holes': 'blue', 'cable':
         stlScene.background = new THREE.Color(isLightTheme ? 0xf0f0f5 : 0x15151f);
         
         stlCamera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 10000);
-        stlCamera.position.set(100, 100, 200);
+        // Conference KOS: Z axis vertical, X axis points into the scene.
+        // Default to a frontal view straight onto the YZ plane (looking along -X).
+        stlCamera.up.set(0, 0, 1);
+        stlCamera.position.set(220, 0, 0);
         
         // Enable preserveDrawingBuffer so canvas.toDataURL works for image export
         stlRenderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true, alpha: false });
+        stlRenderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
         stlRenderer.setSize(container.clientWidth, container.clientHeight);
         // Set clear color to match theme background
         stlRenderer.setClearColor(isLightTheme ? 0xf0f0f5 : 0x15151f, 1);
         stlRenderer.localClippingEnabled = true;
         container.appendChild(stlRenderer.domElement);
+        if (window.ResizeObserver) {
+            if (window.stlResizeObserver) window.stlResizeObserver.disconnect();
+            window.stlResizeObserver = new ResizeObserver(function() { resizeSTLViewer(); });
+            window.stlResizeObserver.observe(container);
+        }
         
         // Initialize clipping planes (pointing inward, initially disabled at max values)
         clipPlaneX = new THREE.Plane(new THREE.Vector3(-1, 0, 0), 250);
         clipPlaneY = new THREE.Plane(new THREE.Vector3(0, -1, 0), 100);
         clipPlaneZ = new THREE.Plane(new THREE.Vector3(0, 0, -1), 100);
         
-        // Reset clipping sliders
-        document.getElementById('clipX').value = 250;
+        // Reset clipping sliders (percentage-based; actual mm ranges set once bounding box is known)
+        document.getElementById('clipX').value = 0;
         document.getElementById('clipY').value = 100;
-        document.getElementById('clipZ').value = 0;
-        document.getElementById('clipXLabel').textContent = 'Off';
+        document.getElementById('clipZ').value = 100;
+        document.getElementById('clipXLabel').textContent = '0mm';
         document.getElementById('clipYLabel').textContent = 'Off';
-        document.getElementById('clipZLabel').textContent = '0mm';
+        document.getElementById('clipZLabel').textContent = 'Off';
         
-        // Initialize Z clipping plane at 0
+        // Initialize clipping planes at the default scene state
+        if (clipPlaneX) clipPlaneX.constant = 0;
+        if (clipPlaneY) clipPlaneY.constant = 0;
         if (clipPlaneZ) clipPlaneZ.constant = 0;
         
         // Add lights
@@ -752,9 +1366,11 @@ var modelColors = {'normal': '#00d4ff', 'gaps': 'red', 'holes': 'blue', 'cable':
         directionalLight3.position.set(0, -1, 0);
         stlScene.add(directionalLight3);
         
-        // Add grid
+        // Add grid (hidden by default; can be toggled for reference)
         var gridHelper = new THREE.GridHelper(400, 40);
+        gridHelper.visible = false;
         stlScene.add(gridHelper);
+        window.stlGridHelper = gridHelper;
         
         // Add axes
         var axesHelper = new THREE.AxesHelper(100);
@@ -768,6 +1384,9 @@ var modelColors = {'normal': '#00d4ff', 'gaps': 'red', 'holes': 'blue', 'cable':
         var loader = new THREE.STLLoader();
         var electrodeData = stlDataBase64[modelKey];
         var globalBoundingBox = new THREE.Box3();
+        // Reference bounding box used to align trajectory data - excludes electrode7 (index 6),
+        // since its geometry doesn't reliably represent the chamber's true center/edges.
+        var refBoundingBox = new THREE.Box3();
         var meshes = new Array(electrodeData.length).fill(null);  // Index-aligned with electrodeData
         
         try {
@@ -795,6 +1414,9 @@ var modelColors = {'normal': '#00d4ff', 'gaps': 'red', 'holes': 'blue', 'cable':
                 // Update global bounding box
                 geometry.computeBoundingBox();
                 globalBoundingBox.union(geometry.boundingBox);
+                if (i !== 6) {
+                    refBoundingBox.union(geometry.boundingBox);
+                }
                 
                 meshes[i] = mesh;  // Store at correct index
                 stlScene.add(mesh);
@@ -810,11 +1432,38 @@ var modelColors = {'normal': '#00d4ff', 'gaps': 'red', 'holes': 'blue', 'cable':
             // Store offset globally for trajectory alignment
             window.electrodeOffset = center.clone();
             
+            // Store the electrode7-excluded reference bbox in the same centered coordinate
+            // frame as the meshes, so trajectory alignment can use it directly.
+            if (!refBoundingBox.isEmpty()) {
+                var refCenter = new THREE.Vector3();
+                refBoundingBox.getCenter(refCenter);
+                window.trajAlignRef = {
+                    centerX: refCenter.x - center.x,
+                    centerZ: refCenter.z - center.z,
+                    maxY: refBoundingBox.max.y - center.y
+                };
+            } else {
+                window.trajAlignRef = { centerX: 0, centerZ: 0, maxY: 0 };
+            }
+            
             // Auto-scale camera based on overall size
             var size = new THREE.Vector3();
             globalBoundingBox.getSize(size);
             var maxDim = Math.max(size.x, size.y, size.z);
-            stlCamera.position.set(maxDim * 0.8, maxDim * 0.8, maxDim * 1.2);
+            
+            // Store per-axis half-extents (with padding) so the Section Plane sliders
+            // work as a percentage of the actual model size, not a fixed mm range.
+            window.clipRanges = {
+                x: (size.x / 2) * 1.1 || 1,
+                y: (size.y / 2) * 1.1 || 1,
+                z: (size.z / 2) * 1.1 || 1
+            };
+            updateClipping();
+            
+            // Frontal view straight onto the YZ plane: camera sits on the X axis
+            // looking along -X, so Y runs left/right and Z runs bottom/top with no tilt.
+            stlCamera.position.set(maxDim * 2.2, 0, 0);
+            stlCamera.up.set(0, 0, 1);
             stlControls.target.set(0, 0, 0);
             stlControls.update();
             
@@ -833,6 +1482,7 @@ var modelColors = {'normal': '#00d4ff', 'gaps': 'red', 'holes': 'blue', 'cable':
         var legendBorderColor = isLightTheme ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.3)';
         
         var legendDiv = document.createElement('div');
+        legendDiv.className = 'stl-overlay stl-legend';
         legendDiv.style.cssText = 'position: absolute; top: 10px; right: 10px; background: ' + legendBg + '; padding: 12px; border-radius: 8px; font-size: 12px; min-width: 130px;';
         legendDiv.innerHTML = '<strong style="color: ' + legendTextColor + '; display: block; margin-bottom: 8px; border-bottom: 1px solid ' + legendBorderColor + '; padding-bottom: 6px;">Electrodes</strong>';
         
@@ -844,7 +1494,7 @@ var modelColors = {'normal': '#00d4ff', 'gaps': 'red', 'holes': 'blue', 'cable':
                 legendItem.dataset.electrodeIndex = i;
                 legendItem.dataset.visible = 'true';
                 legendItem.style.cssText = 'cursor: pointer; padding: 4px 6px; margin: 2px 0; border-radius: 4px; transition: all 0.2s ease; display: flex; align-items: center; gap: 6px;';
-                legendItem.innerHTML = '<span class="legend-color" style="color: ' + colorHex + '; font-size: 14px;">&#9632;</span><span class="legend-text" style="color: ' + legendTextColor + ';">Electrode ' + (i + 1) + '</span>';
+                legendItem.innerHTML = '<span class="legend-color" style="width: 10px; height: 10px; border-radius: 2px; background: ' + colorHex + '; flex: 0 0 auto;"></span><span class="legend-text" style="color: ' + legendTextColor + ';">Electrode ' + (i + 1) + '</span>';
                 
                 // Add hover effect (theme-aware)
                 legendItem.onmouseenter = function() { 
@@ -892,7 +1542,8 @@ var modelColors = {'normal': '#00d4ff', 'gaps': 'red', 'holes': 'blue', 'cable':
         showAllBtn.style.cssText = 'flex: 1; padding: 5px; font-size: 10px; background: rgba(56,239,125,0.8); border: none; border-radius: 4px; color: white; cursor: pointer;';
         showAllBtn.onclick = function() {
             var items = legendDiv.querySelectorAll('.legend-item');
-            items.forEach(function(item, idx) {
+            items.forEach(function(item) {
+                var idx = parseInt(item.dataset.electrodeIndex, 10);
                 item.dataset.visible = 'true';
                 item.querySelector('.legend-text').style.textDecoration = 'none';
                 item.querySelector('.legend-text').style.opacity = '1';
@@ -908,7 +1559,8 @@ var modelColors = {'normal': '#00d4ff', 'gaps': 'red', 'holes': 'blue', 'cable':
         hideAllBtn.style.cssText = 'flex: 1; padding: 5px; font-size: 10px; background: rgba(244,67,54,0.8); border: none; border-radius: 4px; color: white; cursor: pointer;';
         hideAllBtn.onclick = function() {
             var items = legendDiv.querySelectorAll('.legend-item');
-            items.forEach(function(item, idx) {
+            items.forEach(function(item) {
+                var idx = parseInt(item.dataset.electrodeIndex, 10);
                 item.dataset.visible = 'false';
                 item.querySelector('.legend-text').style.textDecoration = 'line-through';
                 item.querySelector('.legend-text').style.opacity = '0.4';
@@ -929,6 +1581,7 @@ var modelColors = {'normal': '#00d4ff', 'gaps': 'red', 'holes': 'blue', 'cable':
         // Add charges legend if available
         if (modelCharges && modelCharges[modelKey]) {
             var chargesDiv = document.createElement('div');
+            chargesDiv.className = 'stl-overlay stl-charges';
             chargesDiv.style.cssText = 'position: absolute; top: 10px; left: 10px; background: ' + legendBg + '; padding: 12px; border-radius: 8px; font-size: 12px; max-width: 200px;';
             chargesDiv.innerHTML = '<strong style="color: ' + legendTextColor + '; display: block; margin-bottom: 8px; border-bottom: 1px solid ' + legendBorderColor + '; padding-bottom: 6px;">Electrode Charges</strong>';
             
@@ -938,7 +1591,7 @@ var modelColors = {'normal': '#00d4ff', 'gaps': 'red', 'holes': 'blue', 'cable':
                     var colorHex = '#' + electrodeColors[i % electrodeColors.length].toString(16).padStart(6, '0');
                     var chargeItem = document.createElement('div');
                     chargeItem.style.cssText = 'padding: 4px 6px; margin: 2px 0; border-radius: 4px; display: flex; align-items: center; gap: 6px;';
-                    chargeItem.innerHTML = '<span style="color: ' + colorHex + '; font-size: 14px;">&#9632;</span><span style="color: ' + legendTextColor + ';">E' + (i + 1) + ': ' + charges[i] + '</span>';
+                    chargeItem.innerHTML = '<span style="width: 10px; height: 10px; border-radius: 2px; background: ' + colorHex + '; flex: 0 0 auto;"></span><span style="color: ' + legendTextColor + ';">E' + (i + 1) + ': ' + charges[i] + '</span>';
                     chargesDiv.appendChild(chargeItem);
                 }
             }
@@ -971,6 +1624,10 @@ var modelColors = {'normal': '#00d4ff', 'gaps': 'red', 'holes': 'blue', 'cable':
         container.innerHTML = '';
         if (stlRenderer) {
             stlRenderer.dispose();
+        }
+        if (window.stlResizeObserver) {
+            window.stlResizeObserver.disconnect();
+            window.stlResizeObserver = null;
         }
         
         // Clear trajectory data
@@ -1024,7 +1681,7 @@ var modelColors = {'normal': '#00d4ff', 'gaps': 'red', 'holes': 'blue', 'cable':
                 var trajScrubber = document.getElementById('trajScrubber');
                 var trajLabel = document.getElementById('trajTimeLabel');
                 if (trajScrubber) trajScrubber.value = trajCurrentTime * 1000;
-                if (trajLabel) trajLabel.textContent = trajCurrentTime.toFixed(3) + ' &micro;s';
+                if (trajLabel) trajLabel.textContent = trajCurrentTime.toFixed(3) + ' µs';
             }
         }
     }
@@ -1052,19 +1709,19 @@ var modelColors = {'normal': '#00d4ff', 'gaps': 'red', 'holes': 'blue', 'cable':
             var trajScrubber = document.getElementById('trajScrubber');
             var trajLabel = document.getElementById('trajTimeLabel');
             if (trajScrubber) trajScrubber.value = trajCurrentTime * 1000;
-            if (trajLabel) trajLabel.textContent = trajCurrentTime.toFixed(3) + ' &micro;s';
+            if (trajLabel) trajLabel.textContent = trajCurrentTime.toFixed(3) + ' µs';
         }
     }
     
     function updatePositionTimeLabel() {
-        var label = document.getElementById('posTimeLabel');
-        if (label) {
+        var value = document.getElementById('posTimeValue');
+        if (value) {
             if (posCurrentTime <= 0.001) {
-                label.innerHTML = '&#9201; <b>START</b>';
+                value.textContent = 'START';
             } else if (posCurrentTime >= posMaxTime - 0.001) {
-                label.innerHTML = '&#9201; <b>END</b>';
+                value.textContent = 'END';
             } else {
-                label.innerHTML = '&#9201; ' + posCurrentTime.toFixed(3) + ' &micro;s';
+                value.textContent = posCurrentTime.toFixed(3) + ' µs';
             }
         }
     }
@@ -1072,135 +1729,20 @@ var modelColors = {'normal': '#00d4ff', 'gaps': 'red', 'holes': 'blue', 'cable':
     // Initialize on page load
     document.addEventListener('DOMContentLoaded', initPositionTimeScrubber);
     
-    // Update 2D position plot with positions at a specific time
-    function update2DTimePositions(time) {
-        var plotDiv = document.getElementsByClassName('plotly-graph-div')[0];
-        if (!plotDiv) return;
-        
-        var modelKeys = [];
-        var refKey = 'normal';
-        var numTestModels = modelKeys.length - 1;
-        var tracesPerType = 4 + 1 + 2 * numTestModels;
-        
-        // Get positions from trajectory at current time
-        function getPositionAtTime(ionSteps, targetTime) {
-            if (!ionSteps || ionSteps.length === 0) return null;
-            
-            // Find timestep closest to target time
-            for (var i = 0; i < ionSteps.length; i++) {
-                if (ionSteps[i].tof >= targetTime) {
-                    return ionSteps[i];
-                }
-            }
-            // Return last position if past end
-            return ionSteps[ionSteps.length - 1];
-        }
-        
-        // Get which models are checked
-        var checkedModels = {};
-        modelKeys.forEach(function(key) {
-            var cb = document.getElementById('cb_' + key);
-            checkedModels[key] = cb ? cb.checked : false;
-        });
-        
-        // Get reference positions at time
-        var refTrajData = trajectoryData['normal'];
-        var refYPositions = [];
-        var refZPositions = [];
-        
-        if (refTrajData) {
-            Object.keys(refTrajData).sort(function(a,b){return parseInt(a)-parseInt(b);}).forEach(function(ionKey) {
-                var pos = getPositionAtTime(refTrajData[ionKey], time);
-                if (pos) {
-                    refYPositions.push(pos.y);
-                    refZPositions.push(pos.z);
-                }
-            });
-        }
-        
-        // Build visibility - show center lines, reference if checked, and all checked models
-        var visibility = [];
-        for (var i = 0; i < tracesPerType * 2; i++) {
-            visibility.push(false);  // Hide all initially
-        }
-        
-        // Show center lines (first 4 traces)
-        visibility[0] = visibility[1] = visibility[2] = visibility[3] = true;
-        
-        // Show reference trace (trace index 4) if checked
-        visibility[4] = checkedModels[refKey] !== false;
-        
-        // Update reference positions
-        if (refYPositions.length > 0) {
-            Plotly.restyle(plotDiv, {
-                x: [refYPositions],
-                y: [refZPositions]
-            }, [4]);
-        }
-        
-        // Update each checked test model
-        var testModelIdx = 0;
-        modelKeys.forEach(function(modelKey) {
-            if (modelKey === refKey) return;
-            
-            var overlayIdx = 5 + testModelIdx * 2;
-            var diffIdx = 5 + testModelIdx * 2 + 1;
-            
-            if (checkedModels[modelKey] && trajectoryData[modelKey]) {
-                visibility[overlayIdx] = true;
-                visibility[diffIdx] = true;
-                
-                // Get model positions at time
-                var trajData = trajectoryData[modelKey];
-                var yPositions = [];
-                var zPositions = [];
-                
-                Object.keys(trajData).sort(function(a,b){return parseInt(a)-parseInt(b);}).forEach(function(ionKey) {
-                    var pos = getPositionAtTime(trajData[ionKey], time);
-                    if (pos) {
-                        yPositions.push(pos.y);
-                        zPositions.push(pos.z);
-                    }
-                });
-                
-                // Calculate differences
-                var diffY = [];
-                var diffZ = [];
-                var minLen = Math.min(yPositions.length, refYPositions.length);
-                for (var i = 0; i < minLen; i++) {
-                    diffY.push(yPositions[i] - refYPositions[i]);
-                    diffZ.push(zPositions[i] - refZPositions[i]);
-                }
-                
-                // Update overlay trace
-                Plotly.restyle(plotDiv, {
-                    x: [yPositions],
-                    y: [zPositions]
-                }, [overlayIdx]);
-                
-                // Update difference trace
-                Plotly.restyle(plotDiv, {
-                    x: [diffY],
-                    y: [diffZ]
-                }, [diffIdx]);
-            }
-            
-            testModelIdx++;
-        });
-        
-        Plotly.restyle(plotDiv, {'visible': visibility});
-    }
-    
-    function updateVisibility() {
-        // Update 2D position plot with current time when model selection changes
-        update2DTimePositions(posCurrentTime);
-    }
+    // NOTE: The actual position-plot rendering (update2DTimePositions / updateVisibility /
+    // getPositionAtTime) is implemented once, later in this file, driven by the uploaded/
+    // preloaded model data (window.uploadedModelData + window.trajectoryData). See the
+    // "POSITION PLOTS (Ion impact positions per timestep)" section below.
     
     // Theme toggle function
-    function toggleTheme() {
+    function toggleTheme(persist) {
         var html = document.documentElement;
         var isLight = document.getElementById('themeToggle').checked;
         html.setAttribute('data-theme', isLight ? 'light' : 'dark');
+
+        if (persist !== false) {
+            try { localStorage.setItem('vmi-theme', isLight ? 'light' : 'dark'); } catch (e) {}
+        }
         
         // Toggle light-mode class on body for brainrot elements
         if (isLight) {
@@ -1216,30 +1758,30 @@ var modelColors = {'normal': '#00d4ff', 'gaps': 'red', 'holes': 'blue', 'cable':
         if (stlScene) {
             stlScene.background = new THREE.Color(isLight ? 0xf0f0f5 : 0x15151f);
         }
+        if (stlRenderer) {
+            stlRenderer.setClearColor(isLight ? 0xf0f0f5 : 0x15151f, 1);
+        }
         
-        // Update STL legend colors
+        // Update all STL overlays, including the optional charge legend
         var stlContainer = document.getElementById('stlContainer');
         if (stlContainer) {
-            var legendDiv = stlContainer.querySelector('div[style*="position: absolute"]');
-            if (legendDiv) {
-                legendDiv.style.background = isLight ? 'rgba(255,255,255,0.9)' : 'rgba(0,0,0,0.85)';
-                // Update legend title
-                var strongEl = legendDiv.querySelector('strong');
+            var overlays = stlContainer.querySelectorAll('.stl-overlay');
+            overlays.forEach(function(overlay) {
+                overlay.style.background = isLight ? 'rgba(255,255,255,0.94)' : 'rgba(0,0,0,0.88)';
+                var strongEl = overlay.querySelector('strong');
                 if (strongEl) {
                     strongEl.style.color = isLight ? '#333' : 'white';
                     strongEl.style.borderBottomColor = isLight ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.3)';
                 }
-                // Update legend items text color
-                var legendTexts = legendDiv.querySelectorAll('.legend-text');
+                var legendTexts = overlay.querySelectorAll('.legend-text, div > span:last-child');
                 legendTexts.forEach(function(textEl) {
                     textEl.style.color = isLight ? '#333' : 'white';
                 });
-                // Update button container border
-                var btnContainer = legendDiv.querySelector('div[style*="border-top"]');
+                var btnContainer = overlay.querySelector('div[style*="border-top"]');
                 if (btnContainer) {
                     btnContainer.style.borderTopColor = isLight ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.3)';
                 }
-            }
+            });
         }
     }
     
@@ -1252,9 +1794,19 @@ var modelColors = {'normal': '#00d4ff', 'gaps': 'red', 'holes': 'blue', 'cable':
     var trajSpeed = 1.0;
     var trajCurrentModel = null;
     var trajVisible = true;
+    // Center of the trajectory data itself (per axis), used to align ion flight paths with
+    // the chamber STL independently of the STL's own bounding box (simulation model was
+    // smaller than the full chamber, so their natural axis origins don't coincide).
+    var trajXOffset = 0;
+    var trajYOffset = 0;
+    var trajZOffset = 0;
     
     function loadTrajectoriesForModel(modelKey) {
         trajCurrentModel = modelKey;
+        trajAnimating = false;
+        trajCurrentTime = 0;
+        trajMaxTime = 0;
+        setTrajectoryPlayButton(false);
         
         // Clear existing trajectories
         trajIonMeshes.forEach(function(mesh) { if (stlScene) stlScene.remove(mesh); });
@@ -1264,23 +1816,48 @@ var modelColors = {'normal': '#00d4ff', 'gaps': 'red', 'holes': 'blue', 'cable':
         
         if (!trajectoryData[modelKey]) {
             document.getElementById('trajIonCount').textContent = 'No trajectory data';
+            document.getElementById('trajPlayBtn').disabled = true;
+            document.getElementById('trajScrubber').disabled = true;
+            document.getElementById('trajTimeLabel').textContent = 'Unavailable';
             return;
         }
+
+        document.getElementById('trajPlayBtn').disabled = false;
+        document.getElementById('trajScrubber').disabled = false;
         
         var data = trajectoryData[modelKey];
         var ionColor = new THREE.Color(modelColors[modelKey] || '#00d4ff');
         
-        // Find max time
+        // Find max time and the per-axis center of the trajectory cloud (min/max midpoint)
         trajMaxTime = 0;
         var ionCount = 0;
+        var trajXMin = Infinity, trajXMax = -Infinity;
+        var trajYMin = Infinity, trajYMax = -Infinity;
+        var trajZMin = Infinity, trajZMax = -Infinity;
         Object.keys(data).forEach(function(ionKey) {
             var steps = data[ionKey];
             ionCount++;
             if (steps.length > 0) {
                 var lastTof = steps[steps.length - 1].tof;
                 if (lastTof > trajMaxTime) trajMaxTime = lastTof;
+                for (var s = 0; s < steps.length; s++) {
+                    if (steps[s].x < trajXMin) trajXMin = steps[s].x;
+                    if (steps[s].x > trajXMax) trajXMax = steps[s].x;
+                    if (steps[s].y < trajYMin) trajYMin = steps[s].y;
+                    if (steps[s].y > trajYMax) trajYMax = steps[s].y;
+                    if (steps[s].z < trajZMin) trajZMin = steps[s].z;
+                    if (steps[s].z > trajZMax) trajZMax = steps[s].z;
+                }
             }
         });
+        // Align to the chamber STL's bounding box (electrodes 1-6, 8, ignoring electrode7):
+        // X and Z centered on the reference geometry, Y pinned to its rightmost (max) edge.
+        var ref = window.trajAlignRef || { centerX: 0, centerZ: 0, maxY: 0 };
+        var trajXCenter = (trajXMin <= trajXMax) ? (trajXMin + trajXMax) / 2 : 0;
+        var trajZCenter = (trajZMin <= trajZMax) ? (trajZMin + trajZMax) / 2 : 0;
+        trajXOffset = trajXCenter - ref.centerX;
+        trajZOffset = trajZCenter - ref.centerZ;
+        trajYOffset = (trajYMin <= trajYMax) ? (trajYMax - ref.maxY) : 0;
         
         // Create ion spheres and trail lines
         Object.keys(data).forEach(function(ionKey) {
@@ -1350,22 +1927,34 @@ var modelColors = {'normal': '#00d4ff', 'gaps': 'red', 'holes': 'blue', 'cable':
         });
          
         // Update UI
-        document.getElementById('trajIonCount').textContent = ionCount + ' ions, ' + trajMaxTime.toFixed(2) + ' &micro;s';
+        document.getElementById('trajIonCount').textContent = ionCount + ' ions · ' + trajMaxTime.toFixed(2) + ' µs';
         document.getElementById('trajScrubber').max = trajMaxTime * 1000;
         document.getElementById('trajScrubber').value = 0;
-        document.getElementById('trajTimeLabel').textContent = '0.000 &micro;s';
+        document.getElementById('trajTimeLabel').textContent = '0.000 µs';
          
         // Reset and show initial state
         trajCurrentTime = 0;
         trajAnimating = false;
-        document.getElementById('trajPlayBtn').textContent = '&#9654; Play';
+        setTrajectoryPlayButton(false);
         updateTrajectoryPositions(0);
     }
     
+    function toggleGridVisibility() {
+        if (window.stlGridHelper) {
+            window.stlGridHelper.visible = !window.stlGridHelper.visible;
+        }
+    }
+
     function updateClipping() {
-        var xVal = parseFloat(document.getElementById('clipX').value);
-        var yVal = parseFloat(document.getElementById('clipY').value);
-        var zVal = parseFloat(document.getElementById('clipZ').value);
+        var ranges = window.clipRanges || { x: 250, y: 100, z: 100 };
+        var xPct = parseFloat(document.getElementById('clipX').value);
+        var yPct = parseFloat(document.getElementById('clipY').value);
+        var zPct = parseFloat(document.getElementById('clipZ').value);
+        
+        // Convert percentage (-100..100) to actual mm based on the model's own bounding box
+        var xVal = (xPct / 100) * ranges.x;
+        var yVal = (yPct / 100) * ranges.y;
+        var zVal = (zPct / 100) * ranges.z;
         
         // Update clipping plane positions
         if (clipPlaneX) clipPlaneX.constant = xVal;
@@ -1373,14 +1962,13 @@ var modelColors = {'normal': '#00d4ff', 'gaps': 'red', 'holes': 'blue', 'cable':
         if (clipPlaneZ) clipPlaneZ.constant = zVal;
         
         // Update labels
-        var maxX = 250, maxY = 100, maxZ = 100;
-        document.getElementById('clipXLabel').textContent = xVal >= maxX ? 'Off' : xVal.toFixed(0) + 'mm';
-        document.getElementById('clipYLabel').textContent = yVal >= maxY ? 'Off' : yVal.toFixed(0) + 'mm';
-        document.getElementById('clipZLabel').textContent = zVal >= maxZ ? 'Off' : zVal.toFixed(0) + 'mm';
+        document.getElementById('clipXLabel').textContent = xPct >= 100 ? 'Off' : xVal.toFixed(0) + 'mm';
+        document.getElementById('clipYLabel').textContent = yPct >= 100 ? 'Off' : yVal.toFixed(0) + 'mm';
+        document.getElementById('clipZLabel').textContent = zPct >= 100 ? 'Off' : zVal.toFixed(0) + 'mm';
     }
     
     function resetClipping() {
-        document.getElementById('clipX').value = 250;
+        document.getElementById('clipX').value = 0;
         document.getElementById('clipY').value = 100;
         document.getElementById('clipZ').value = 100;
         updateClipping();
@@ -1438,11 +2026,10 @@ var modelColors = {'normal': '#00d4ff', 'gaps': 'red', 'holes': 'blue', 'cable':
                     }
                 
                     var step = steps[stepIdx];
-                    var offset = window.electrodeOffset || new THREE.Vector3();
-                    // SIMION origin is at electrode corner - need additional 85mm offset for Y and Z
-                    var simionOffsetY = 85;
-                    var simionOffsetZ = 85;
-                    mesh.position.set(step.x - offset.x, step.y - offset.y - simionOffsetY, step.z - offset.z - simionOffsetZ);
+                    // All three axes are aligned using the trajectory's own center (trajXOffset/
+                    // trajYOffset/trajZOffset) instead of the chamber STL's bounding box, since the
+                    // simulation was run on a smaller model than the full chamber STL.
+                    mesh.position.set(step.x - trajXOffset, step.y - trajYOffset, step.z - trajZOffset);
                     mesh.visible = trajVisible;
                 
                     // Update color by KE if enabled - using hot colormap (blue -> cyan -> green -> yellow -> red)
@@ -1478,15 +2065,13 @@ var modelColors = {'normal': '#00d4ff', 'gaps': 'red', 'holes': 'blue', 'cable':
                 if (showTrails && trajVisible) {
                     var positions = trail.geometry.attributes.position.array;
                     var colors = trail.geometry.attributes.color ? trail.geometry.attributes.color.array : null;
-                    var offset = window.electrodeOffset || new THREE.Vector3();
-                    var simionOffsetY = 85;
-                    var simionOffsetZ = 85;
                     
                     for (var i = 0; i <= stepIdx; i++) {
-                        // Update position
-                        positions[i * 3] = steps[i].x - offset.x;
-                        positions[i * 3 + 1] = steps[i].y - offset.y - simionOffsetY;
-                        positions[i * 3 + 2] = steps[i].z - offset.z - simionOffsetZ;
+                        // All axes aligned via trajXOffset/trajYOffset/trajZOffset (see above) so the
+                        // trajectory cloud and the chamber STL share the same X=0/Y=0/Z=0 origin.
+                        positions[i * 3] = steps[i].x - trajXOffset;
+                        positions[i * 3 + 1] = steps[i].y - trajYOffset;
+                        positions[i * 3 + 2] = steps[i].z - trajZOffset;
                         
                         // Update color if available and KE coloring disabled
                         // (KE colors are pre-computed during geometry creation)
@@ -1515,9 +2100,12 @@ var modelColors = {'normal': '#00d4ff', 'gaps': 'red', 'holes': 'blue', 'cable':
     }
     
     function toggleTrajectoryPlay() {
+        if (trajMaxTime <= 0) {
+            showToast('No trajectory animation is available for this model.', 'error');
+            return;
+        }
         trajAnimating = !trajAnimating;
-        var btn = document.getElementById('trajPlayBtn');
-        if (btn) btn.textContent = trajAnimating ? '&#9208; Pause' : '&#9654; Play';
+        setTrajectoryPlayButton(trajAnimating);
         
         if (trajAnimating) {
             var speedEl = document.getElementById('trajSpeed');
@@ -1539,8 +2127,7 @@ var modelColors = {'normal': '#00d4ff', 'gaps': 'red', 'holes': 'blue', 'cable':
         if (trajCurrentTime > trajMaxTime) {
             trajCurrentTime = trajMaxTime;
             trajAnimating = false;
-            var btn = document.getElementById('trajPlayBtn');
-            if (btn) btn.textContent = '&#9654; Play';
+            setTrajectoryPlayButton(false);
         }
         
         updateTrajectoryPositions(trajCurrentTime);
@@ -1552,7 +2139,7 @@ var modelColors = {'normal': '#00d4ff', 'gaps': 'red', 'holes': 'blue', 'cable':
         var scrubber = document.getElementById('trajScrubber');
         var label = document.getElementById('trajTimeLabel');
         if (scrubber) scrubber.value = trajCurrentTime * 1000;
-        if (label) label.textContent = trajCurrentTime.toFixed(3) + ' &micro;s';
+        if (label) label.textContent = trajCurrentTime.toFixed(3) + ' µs';
         
         // Sync 2D position scrubber
         var posScrubber = document.getElementById('posTimeScrubber');
@@ -1572,7 +2159,7 @@ var modelColors = {'normal': '#00d4ff', 'gaps': 'red', 'holes': 'blue', 'cable':
             updateTrajectoryPositions(trajCurrentTime);
             update2DTimePositions(trajCurrentTime);  // Sync 2D plot
             var label = document.getElementById('trajTimeLabel');
-            if (label) label.textContent = trajCurrentTime.toFixed(3) + ' &micro;s';
+            if (label) label.textContent = trajCurrentTime.toFixed(3) + ' µs';
             
             // Sync 2D position scrubber
             var posScrubber = document.getElementById('posTimeScrubber');
@@ -1585,12 +2172,11 @@ var modelColors = {'normal': '#00d4ff', 'gaps': 'red', 'holes': 'blue', 'cable':
     function resetTrajectory() {
         trajAnimating = false;
         trajCurrentTime = 0;
-        var btn = document.getElementById('trajPlayBtn');
         var scrubber = document.getElementById('trajScrubber');
         var label = document.getElementById('trajTimeLabel');
-        if (btn) btn.textContent = '&#9654; Play';
+        setTrajectoryPlayButton(false);
         if (scrubber) scrubber.value = 0;
-        if (label) label.textContent = '0.000 &micro;s';
+        if (label) label.textContent = '0.000 µs';
         updateTrajectoryPositions(0);
         update2DTimePositions(0);  // Sync 2D plot
         
@@ -1717,7 +2303,13 @@ var modelColors = {'normal': '#00d4ff', 'gaps': 'red', 'holes': 'blue', 'cable':
                     selectedModels.push(k); 
                 }
             }
-            if (selectedModels.length === 0) selectedModels = Object.keys(window.uploadedModelData || {});
+            if (selectedModels.length === 0) {
+                if (modelKeys.length > 0) {
+                    showToast('Select at least one model before exporting.', 'error');
+                    return;
+                }
+                selectedModels = Object.keys(window.uploadedModelData || {});
+            }
 
             // Request matplotlib export from server
             if (window.location.protocol && window.location.protocol.indexOf('http') === 0) {
@@ -1738,12 +2330,13 @@ var modelColors = {'normal': '#00d4ff', 'gaps': 'red', 'holes': 'blue', 'cable':
                     a.click();
                     document.body.removeChild(a);
                     setTimeout(function(){ URL.revokeObjectURL(url); }, 10000);
+                    showToast('Detector plot exported.', 'success');
                 }).catch(function(err){
-                    alert('Download fehlgeschlagen: ' + err);
+                    showToast('Detector plot export failed: ' + err.message, 'error');
                     console.error(err);
                 });
             } else {
-                alert('Download wird nur im HTTP-Modus unterstützt');
+                showToast('Export is available while the app is running in HTTP mode.', 'error');
             }
         }
         
@@ -1754,7 +2347,7 @@ var modelColors = {'normal': '#00d4ff', 'gaps': 'red', 'holes': 'blue', 'cable':
 
         function download3D() {
             var canvas = document.querySelector('#stlContainer canvas');
-            if (!canvas) { alert('3D view not open'); return; }
+            if (!canvas) { showToast('Open a 3D model before exporting.', 'error'); return; }
             // Compose a temporary canvas so we can add a legend overlay (charges)
             var w = canvas.width, h = canvas.height;
             var tmp = document.createElement('canvas'); tmp.width = w; tmp.height = h;
@@ -1762,7 +2355,7 @@ var modelColors = {'normal': '#00d4ff', 'gaps': 'red', 'holes': 'blue', 'cable':
             // copy original
             ctx.drawImage(canvas, 0, 0);
             // draw charges legend if available
-            var modelKey = (typeof currentModelKey !== 'undefined') ? currentModelKey : (window.trajCurrentModel || null);
+            var modelKey = window.currentSTLModelKey || window.trajCurrentModel || null;
             var charges = (typeof modelCharges !== 'undefined' && modelKey && modelCharges[modelKey]) ? modelCharges[modelKey] : null;
             if (charges) {
                 var pad = 12, lineH = 18;
@@ -1778,11 +2371,14 @@ var modelColors = {'normal': '#00d4ff', 'gaps': 'red', 'holes': 'blue', 'cable':
                     ctx.fillStyle = 'white'; ctx.fillText('E' + (i+1) + ': ' + charges[i], 34, y);
                 }
             }
-            // add annotation
+            // Add a high-contrast annotation band that remains legible in both themes
+            ctx.fillStyle = 'rgba(10,14,28,0.68)';
+            ctx.fillRect(0, h - 46, w, 46);
             ctx.fillStyle = 'white'; ctx.font = '16px sans-serif';
-            ctx.fillText('0 V region &rarr; increasingly negative potentials', 10, h - 20);
+            ctx.fillText('0 V region → increasingly negative potentials', 14, h - 17);
             var dataUrl = tmp.toDataURL('image/png');
             downloadDataUrl(dataUrl, 'vmi_3d.png');
+            showToast('3D view exported.', 'success');
         }
 
 
@@ -1790,11 +2386,9 @@ var modelColors = {'normal': '#00d4ff', 'gaps': 'red', 'holes': 'blue', 'cable':
         async function handleModelUpload() {
             const modelName = document.getElementById('modelNameInput').value.trim();
             const files = document.getElementById('modelFolderInput').files;
-            const statusDiv = document.getElementById('uploadStatus');
             
             if (files.length === 0) {
-                statusDiv.style.display = 'block';
-                statusDiv.innerHTML = '<span style="color: #ff6b6b;">&#10060; No folder selected</span>';
+                setUploadStatus('error', 'Choose a model folder first.');
                 return;
             }
             
@@ -1806,8 +2400,7 @@ var modelColors = {'normal': '#00d4ff', 'gaps': 'red', 'holes': 'blue', 'cable':
                 formData.append('files', file);
             }
             
-            statusDiv.style.display = 'block';
-            statusDiv.innerHTML = '<span style="color: #ffd93d;">&#10231; Loading...</span>';
+            setUploadStatus('loading', 'Loading model data…');
             
             try {
                 console.log('Sending upload request to /upload_models');
@@ -1823,26 +2416,25 @@ var modelColors = {'normal': '#00d4ff', 'gaps': 'red', 'holes': 'blue', 'cable':
                     data = await response.json();
                 } catch (parseErr) {
                     console.error('Failed to parse response:', parseErr);
-                    statusDiv.innerHTML = '<span style="color: #ff6b6b;">&#10060; Server error (invalid response)</span>';
+                    setUploadStatus('error', 'The server returned an invalid response.');
                     return;
                 }
                 
                 if (response.ok) {
-                    statusDiv.innerHTML = '<span style="color: #51cf66;">&#10003; Loaded successfully!</span>';
+                    setUploadStatus('success', 'Model loaded successfully.', data.warnings || []);
                     document.getElementById('modelNameInput').value = '';
                     document.getElementById('modelFolderInput').value = '';
+                    document.getElementById('modelFolderLabel').textContent = 'No folder selected';
                     
                     // Refresh uploaded models list
                     setTimeout(loadUploadedModels, 500);
                 } else {
-                    statusDiv.innerHTML = '<span style="color: #ff6b6b;">&#10060; ' + (data.error || 'Load failed') + '</span>';
-                    if (data.warnings && data.warnings.length > 0) {
-                        statusDiv.innerHTML += '<div style="font-size: 12px; color: #ffd93d; margin-top: 5px;">' + data.warnings.join('<br>') + '</div>';
-                    }
+                    const errorMessage = data.error || (data.errors || []).join(' ') || 'The model could not be loaded.';
+                    setUploadStatus('error', errorMessage, data.warnings || []);
                 }
             } catch (err) {
                 console.error('Upload error:', err);
-                statusDiv.innerHTML = '<span style="color: #ff6b6b;">&#10060; Error: ' + err.message + '</span>';
+                setUploadStatus('error', 'Upload failed: ' + err.message);
             }
         }
         
@@ -1853,10 +2445,23 @@ var modelColors = {'normal': '#00d4ff', 'gaps': 'red', 'holes': 'blue', 'cable':
                 const firstFile = this.files[0];
                 const filePath = firstFile.webkitRelativePath || firstFile.name;
                 const folderName = filePath.split('/')[0];
+                const folderLabel = document.getElementById('modelFolderLabel');
+                if (folderLabel) {
+                    folderLabel.textContent = folderName + ' · ' + this.files.length + (this.files.length === 1 ? ' file' : ' files');
+                    folderLabel.title = folderName;
+                }
                 
                 if (folderName && !document.getElementById('modelNameInput').value.trim()) {
                     document.getElementById('modelNameInput').value = folderName;
                 }
+            } else {
+                document.getElementById('modelFolderLabel').textContent = 'No folder selected';
+            }
+        });
+        document.querySelector('.file-picker-button').addEventListener('keydown', function(event) {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                document.getElementById('modelFolderInput').click();
             }
         });
         
@@ -1865,6 +2470,7 @@ var modelColors = {'normal': '#00d4ff', 'gaps': 'red', 'holes': 'blue', 'cable':
         window.stlDataCache = {};        // key -> [b64, b64, ...]  (per electrode)
 
         async function openSTLViewerUploaded(modelKey, modelName) {
+            closeModelDrawer();
             // Fetch STL data from server if not cached
             if (!window.stlDataCache[modelKey]) {
                 try {
@@ -1872,74 +2478,105 @@ var modelColors = {'normal': '#00d4ff', 'gaps': 'red', 'holes': 'blue', 'cable':
                     if (resp.ok) {
                         const d = await resp.json();
                         window.stlDataCache[modelKey] = d.stl_array || [];
+                    } else {
+                        throw new Error('HTTP ' + resp.status);
                     }
                 } catch(e) {
-                    alert('Fehler beim Laden der 3D-Daten: ' + e);
+                    showToast('Could not load the 3D data: ' + e.message, 'error');
                     return;
                 }
             }
-            // Set as reference for deviation plot
-            window.activeRefKey = modelKey;
             // Temporarily inject into stlDataBase64 so openSTLViewer can find it
             stlDataBase64[modelKey] = window.stlDataCache[modelKey];
             openSTLViewer(modelKey, modelName);
-            // Re-render deviation plot with new reference
-            updateVisibility();
         }
 
-        // Fixed axis range, computed once from end-position data after upload
-        window.plotAxisRange = null;
-        // Key of the model currently shown in 3D viewer (used as reference for deviation)
-        window.activeRefKey = null;
+        // ============================================================================
+        // POSITION PLOTS - ion positions per timestep / detector impact positions
+        // ----------------------------------------------------------------------------
+        // renderUploadedPlot(time) draws two aligned 2D views (top: YZ, bottom: ZX) of
+        // where every checked model's ions are located at the given simulation time.
+        //
+        //   time === -1 (or the scrubber is at its rightmost/"End" position)
+        //       -> the authoritative final impact positions from the result file are
+        //          used, i.e. exactly where each ion actually landed on the detector.
+        //   0 <= time < max flight time
+        //       -> each ion's position is interpolated from its recorded trajectory
+        //          steps (ions that already reached the detector earlier simply stay
+        //          at their last known/impact position).
+        // ============================================================================
 
+        // Fixed axis range, computed once from the final impact-position data so the
+        // plot doesn't rescale while scrubbing through time.
+        window.plotAxisRange = null;
+
+        // Finds an ion's position at (or just after) targetTime. If the ion's flight
+        // already ended before targetTime, its last recorded position (its detector
+        // impact position) is returned instead.
         function getPositionAtTime(ionSteps, targetTime) {
             if (!ionSteps || ionSteps.length === 0) return null;
-            for (var i = 0; i < ionSteps.length; i++) {
+            for (let i = 0; i < ionSteps.length; i++) {
                 if (ionSteps[i].tof >= targetTime) return ionSteps[i];
             }
             return ionSteps[ionSteps.length - 1];
         }
 
+        // Square, padded axis range covering every model's final detector impact positions.
         function computeAxisRange() {
             const modelData = window.uploadedModelData || {};
-            let allY = [], allZ = [];
+            let allX = [], allY = [], allZ = [];
             for (const m of Object.values(modelData)) {
+                if (m.x) allX = allX.concat(Array.from(m.x));
                 if (m.y) allY = allY.concat(Array.from(m.y));
                 if (m.z) allZ = allZ.concat(Array.from(m.z));
             }
-            if (allY.length === 0) return null;
+            if (allX.length === 0 && allY.length === 0 && allZ.length === 0) return null;
+
             const pad = 5;
-            const yMin = Math.min(...allY) - pad, yMax = Math.max(...allY) + pad;
-            const zMin = Math.min(...allZ) - pad, zMax = Math.max(...allZ) + pad;
-            const size = Math.max(yMax - yMin, zMax - zMin);
-            const yCtr = (yMin + yMax) / 2, zCtr = (zMin + zMax) / 2;
-            return { y: [yCtr - size/2, yCtr + size/2], z: [zCtr - size/2, zCtr + size/2] };
+            const rangeOf = (arr) => arr.length ? [Math.min(...arr) - pad, Math.max(...arr) + pad] : [0, 0];
+            const [xMin, xMax] = rangeOf(allX);
+            const [yMin, yMax] = rangeOf(allY);
+            const [zMin, zMax] = rangeOf(allZ);
+
+            // Use one common square size (largest span) so the YZ/ZX plots keep an equal aspect ratio.
+            const size = Math.max(xMax - xMin, yMax - yMin, zMax - zMin, 1);
+            const xCtr = (xMin + xMax) / 2, yCtr = (yMin + yMax) / 2, zCtr = (zMin + zMax) / 2;
+            return {
+                x: [xCtr - size / 2, xCtr + size / 2],
+                y: [yCtr - size / 2, yCtr + size / 2],
+                z: [zCtr - size / 2, zCtr + size / 2]
+            };
         }
 
+        // Returns {x:[], y:[], z:[]} for a model at a given timestep.
+        // time < 0, undefined, or at/after the global max flight time -> real detector
+        // impact positions (authoritative "end" data from the result file).
+        // Otherwise -> per-ion trajectory position interpolated at that time.
         function getModelPositions(key, time) {
-            // Returns {y:[], z:[]} for model at given time (-1 = end positions)
             const modelData = window.uploadedModelData || {};
             const trajData  = window.trajectoryData   || {};
             const m = modelData[key];
-            if (!m) return {y:[], z:[]};
+            if (!m) return { x: [], y: [], z: [] };
+
+            const maxTime = (typeof posMaxTime !== 'undefined' && posMaxTime > 0) ? posMaxTime : Infinity;
+            const atDetector = (time === undefined || time < 0 || time >= maxTime - 1e-6);
+
             const traj = trajData[key];
-            if (traj && time >= 0) {
-                const ys = [], zs = [];
-                Object.keys(traj).sort((a,b) => parseInt(a)-parseInt(b)).forEach(ionKey => {
+            if (traj && !atDetector) {
+                const xs = [], ys = [], zs = [];
+                Object.keys(traj).sort((a, b) => parseInt(a) - parseInt(b)).forEach(ionKey => {
                     const pos = getPositionAtTime(traj[ionKey], time);
-                    if (pos) { ys.push(pos.y); zs.push(pos.z); }
+                    if (pos) { xs.push(pos.x); ys.push(pos.y); zs.push(pos.z); }
                 });
-                return {y: ys, z: zs};
+                return { x: xs, y: ys, z: zs };
             }
-            return {y: Array.from(m.y || []), z: Array.from(m.z || [])};
+            // End / detector impact positions (authoritative, from the result file)
+            return { x: Array.from(m.x || []), y: Array.from(m.y || []), z: Array.from(m.z || []) };
         }
 
         function renderUploadedPlot(time) {
-            if (time === undefined || time < 0) time = -1;
+            if (time === undefined) time = -1;
             const container = document.getElementById('plotly-container');
-            const devContainer = document.getElementById('deviation-container');
-            const devCell = document.getElementById('deviation-cell');
-            const row = document.getElementById('position-plots-row');
             if (!container) return;
 
             const modelData = window.uploadedModelData || {};
@@ -1948,108 +2585,65 @@ var modelColors = {'normal': '#00d4ff', 'gaps': 'red', 'holes': 'blue', 'cable':
             if (!window.plotAxisRange && Object.keys(modelData).length > 0) {
                 window.plotAxisRange = computeAxisRange();
             }
-            const axRange = window.plotAxisRange;
+            const axRange     = window.plotAxisRange;
+            const gridColor   = isLight ? 'rgba(0,0,0,0.1)' : 'rgba(100,100,120,0.3)';
+            const legendStyle = { bgcolor: isLight ? 'rgba(255,255,255,0.9)' : 'rgba(30,30,40,0.9)',
+                                   font: { color: isLight ? '#333' : '#e0e0e0' } };
 
-            const squareLayout = {
+            const mainLayout = {
+                // ZX plane: view of the ion impact positions on the detector
                 xaxis: {
-                    title: 'X Position [mm]',
-                    gridcolor: isLight ? 'rgba(0,0,0,0.1)' : 'rgba(100,100,120,0.3)',
-                    range: axRange ? axRange.y : undefined,
-                    fixedrange: true, constrain: 'domain'
+                    title: 'Z Position [mm]', gridcolor: gridColor,
+                    range: axRange ? axRange.z : undefined,
+                    domain: [0, 1], fixedrange: true, constrain: 'domain'
                 },
                 yaxis: {
-                    title: 'Y Position [mm]',
-                    gridcolor: isLight ? 'rgba(0,0,0,0.1)' : 'rgba(100,100,120,0.3)',
-                    range: axRange ? axRange.z : undefined,
-                    scaleanchor: 'x', scaleratio: 1,
-                    fixedrange: true
+                    title: 'X Position [mm]', gridcolor: gridColor,
+                    range: axRange ? axRange.x : undefined,
+                    domain: [0, 1], scaleanchor: 'x', scaleratio: 1, fixedrange: true
                 },
                 autosize: true,
                 height: 480,
                 uirevision: 'position-plot',
                 paper_bgcolor: 'rgba(0,0,0,0)',
                 plot_bgcolor: isLight ? 'rgba(250,250,255,0.9)' : 'rgba(25,25,35,0.8)',
-                legend: {bgcolor: isLight ? 'rgba(255,255,255,0.9)' : 'rgba(30,30,40,0.9)', font: {color: isLight ? '#333' : '#e0e0e0'}},
-                margin: {l:55, r:20, t:20, b:55}
+                legend: legendStyle,
+                margin: { l: 55, r: 20, t: 20, b: 55 }
             };
 
             if (Object.keys(modelData).length === 0) {
-                Plotly.react(container, [{x:[], y:[], mode:'markers', type:'scatter', name:'', marker:{size:6}}],
-                    Object.assign({}, squareLayout, {annotations:[{text:'Noch kein Modell hochgeladen',
-                        xref:'paper', yref:'paper', x:0.5, y:0.5, showarrow:false, font:{size:16, color:'#666'}}]}));
-                if (devCell) devCell.style.display = 'none';
-                if (row) row.classList.add('single');
+                Plotly.react(container, [{ x: [], y: [], mode: 'markers', type: 'scatter', name: '', marker: { size: 6 } }],
+                    Object.assign({}, mainLayout, { annotations: [{ text: 'No model data loaded',
+                        xref: 'paper', yref: 'paper', x: 0.5, y: 0.5, showarrow: false, font: { size: 16, color: '#666' } }] }));
                 return;
             }
 
-            // --- Main position plot ---
             const checkedKeys = Object.keys(modelData).filter(k => {
                 const cb = document.getElementById('cb_' + k);
                 return cb && cb.checked;
             });
 
+            // --- ZX position traces ---
             const traces = checkedKeys.map(key => {
-                const m = modelData[key];
+                const m   = modelData[key];
                 const pos = getModelPositions(key, time);
-                return {x: pos.y, y: pos.z, mode: 'markers', type: 'scatter',
-                    name: m.name, marker: {size: 6, color: m.color, opacity: 0.8}};
+                return { x: pos.z, y: pos.x, mode: 'markers', type: 'scatter', name: m.name,
+                    marker: { size: 6, color: m.color, opacity: 0.8 }, xaxis: 'x', yaxis: 'y' };
             });
 
-            Plotly.react(container, traces.length ? traces : [{x:[], y:[], mode:'markers', type:'scatter'}], squareLayout, {responsive: true});
-
-            // --- Deviation plot: only if >=2 checked models and a reference is set ---
-            const refKey = window.activeRefKey && modelData[window.activeRefKey] ? window.activeRefKey
-                         : (checkedKeys.length > 0 ? checkedKeys[0] : null);
-
-            if (devContainer && devCell && checkedKeys.length >= 2 && refKey) {
-                devCell.style.display = 'block';
-                if (row) row.classList.remove('single');
-                const refPos = getModelPositions(refKey, time);
-                const refName = modelData[refKey].name;
-
-                const devTraces = [];
-                // Zero-line crosshair
-                devTraces.push({x:[-5,5], y:[0,0], mode:'lines', type:'scatter', showlegend:false,
-                    line:{color:'rgba(150,150,150,0.4)', width:1, dash:'dash'}, hoverinfo:'skip'});
-                devTraces.push({x:[0,0], y:[-5,5], mode:'lines', type:'scatter', showlegend:false,
-                    line:{color:'rgba(150,150,150,0.4)', width:1, dash:'dash'}, hoverinfo:'skip'});
-
-                for (const key of checkedKeys) {
-                    if (key === refKey) continue;
-                    const m = modelData[key];
-                    const pos = getModelPositions(key, time);
-                    const len = Math.min(pos.y.length, refPos.y.length);
-                    const dy = [], dz = [];
-                    for (let i = 0; i < len; i++) { dy.push(pos.y[i]-refPos.y[i]); dz.push(pos.z[i]-refPos.z[i]); }
-                    devTraces.push({x: dy, y: dz, mode: 'markers', type: 'scatter',
-                        name: m.name + ' - ' + refName,
-                        marker: {size: 5, color: m.color, opacity: 0.75}});
-                }
-
-                const devLayout = {
-                    xaxis: {title: 'DeltaX [mm]', gridcolor: isLight ? 'rgba(0,0,0,0.1)' : 'rgba(100,100,120,0.3)',
-                        zeroline:false, fixedrange:true, constrain:'domain'},
-                    yaxis: {title: 'DeltaY [mm]', gridcolor: isLight ? 'rgba(0,0,0,0.1)' : 'rgba(100,100,120,0.3)',
-                        scaleanchor:'x', scaleratio:1, zeroline:false, fixedrange:true},
-                    autosize: true, height: 480,
-                    uirevision: 'deviation-plot',
-                    paper_bgcolor: 'rgba(0,0,0,0)',
-                    plot_bgcolor: isLight ? 'rgba(250,250,255,0.9)' : 'rgba(25,25,35,0.8)',
-                    legend: {bgcolor: isLight ? 'rgba(255,255,255,0.9)' : 'rgba(30,30,40,0.9)', font: {color: isLight ? '#333' : '#e0e0e0'}},
-                    title: {text: 'Deviation from reference: ' + refName, font: {color: isLight ? '#333' : '#e0e0e0', size:13}},
-                    margin: {l:55, r:20, t:40, b:55}
-                };
-                Plotly.react(devContainer, devTraces, devLayout, {responsive: true});
-            } else if (devCell) {
-                devCell.style.display = 'none';
-                if (row) row.classList.add('single');
-            }
+            Plotly.react(container,
+                traces.length ? traces : [{ x: [], y: [], mode: 'markers', type: 'scatter', xaxis: 'x', yaxis: 'y' }],
+                mainLayout, { responsive: true });
         }
 
+        // Re-render the position plots at a given time (called by the 3D-viewer's
+        // trajectory scrubber/animation to keep both views in sync).
         function update2DTimePositions(time) {
             renderUploadedPlot(time);
         }
 
+        // Re-render the position plots at the currently selected time (called when a
+        // model checkbox is toggled).
         function updateVisibility() {
             const t = (typeof posCurrentTime !== 'undefined') ? posCurrentTime : -1;
             renderUploadedPlot(t);
@@ -2060,31 +2654,87 @@ var modelColors = {'normal': '#00d4ff', 'gaps': 'red', 'holes': 'blue', 'cable':
 
             try {
                 const response = await fetch('/get_models');
+                if (!response.ok) throw new Error('HTTP ' + response.status);
                 const data = await response.json();
 
                 if (!data.uploaded_models || data.uploaded_models.length === 0) {
-                    container.innerHTML = '<p style="color: #999; margin: 0; font-size: 11px;">No models uploaded yet...</p>';
+                    const emptyState = document.createElement('p');
+                    emptyState.className = 'empty-state';
+                    emptyState.textContent = 'No models loaded yet.';
+                    container.replaceChildren(emptyState);
+                    updateModelSelectionSummary();
                     renderUploadedPlot();  // Show empty axes
                     return;
                 }
 
-                // Create checkbox list for each model
-                let html = '';
-                for (let model of data.uploaded_models) {
-                    html += `<div class="model-item" style="margin-bottom: 12px;">
-                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: white; margin: 0;">
-                            <input type="checkbox" id="cb_${model.key}" checked onchange="updateVisibility()" style="cursor: pointer;">
-                            <span style="color: ${model.color}; font-size: 14px;">&#9679;</span>
-                            <span style="flex: 1; font-weight: 500;">${model.name}</span>
-                        </label>
-                        <div style="font-size: 10px; color: #999; margin-left: 22px; margin-top: 4px;">
-                            &#10003; Results${model.has_trajectory ? ' | &#10003; Animations' : ' | &#10060; No Animations'}${model.has_stls ? ' | &#10003; 3D' : ' | &#10060; No 3D'}
-                        </div>
-                        ${model.has_stls ? `<button onclick="openSTLViewerUploaded('${model.key}', '${model.name}')" style="margin-top: 4px; padding: 4px 8px; background: #667eea; border: none; border-radius: 3px; color: white; cursor: pointer; font-size: 10px;">3D View</button>` : ''}
-                    </div>`;
+                // Preserve selections while rebuilding the list after an upload.
+                const previousSelections = new Map(
+                    Array.from(container.querySelectorAll('input[type="checkbox"]')).map(box => [box.id.slice(3), box.checked])
+                );
+                const fragment = document.createDocumentFragment();
+
+                for (const model of data.uploaded_models) {
+                    const card = document.createElement('article');
+                    card.className = 'model-item';
+
+                    const main = document.createElement('div');
+                    main.className = 'model-item-main';
+
+                    const label = document.createElement('label');
+                    label.className = 'model-toggle';
+
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.id = 'cb_' + model.key;
+                    checkbox.checked = previousSelections.has(model.key) ? previousSelections.get(model.key) : true;
+                    checkbox.addEventListener('change', function() {
+                        updateModelSelectionSummary();
+                        updateVisibility();
+                    });
+
+                    const swatch = document.createElement('span');
+                    swatch.className = 'model-color';
+                    swatch.style.backgroundColor = model.color;
+                    swatch.setAttribute('aria-hidden', 'true');
+
+                    const name = document.createElement('span');
+                    name.className = 'model-name';
+                    name.textContent = model.name;
+                    name.title = model.name;
+
+                    label.append(checkbox, swatch, name);
+                    main.appendChild(label);
+
+                    if (model.has_stls) {
+                        const viewButton = document.createElement('button');
+                        viewButton.type = 'button';
+                        viewButton.className = 'btn-3d';
+                        viewButton.innerHTML = '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z M4.4 7.7 12 12l7.6-4.3M12 12v9"/></svg><span>3D view</span>';
+                        viewButton.addEventListener('click', function() {
+                            openSTLViewerUploaded(model.key, model.name);
+                        });
+                        main.appendChild(viewButton);
+                    }
+
+                    const meta = document.createElement('div');
+                    meta.className = 'model-meta';
+                    [
+                        ['Results', true],
+                        ['Animation', Boolean(model.has_trajectory)],
+                        ['3D', Boolean(model.has_stls)]
+                    ].forEach(function(status) {
+                        const pill = document.createElement('span');
+                        pill.className = 'status-pill' + (status[1] ? '' : ' is-missing');
+                        pill.textContent = status[1] ? status[0] : 'No ' + status[0].toLowerCase();
+                        meta.appendChild(pill);
+                    });
+
+                    card.append(main, meta);
+                    fragment.appendChild(card);
                 }
 
-                container.innerHTML = html;
+                container.replaceChildren(fragment);
+                updateModelSelectionSummary();
 
                 window.modelKeys = data.uploaded_models.map(m => m.key);
                 window.trajectoryData = window.trajectoryData || {};
@@ -2094,15 +2744,16 @@ var modelColors = {'normal': '#00d4ff', 'gaps': 'red', 'holes': 'blue', 'cable':
                 for (let model of data.uploaded_models) {
                     window.modelColors[model.key] = model.color;
                     try {
-                        console.log('Lade Daten für Modell:', model.key);
+                        console.log('Loading data for model:', model.key);
                         const modelResp = await fetch('/get_model_data/' + model.key);
                         if (modelResp.ok) {
                             const modelData = await modelResp.json();
-                            console.log('  Modell-Daten erhalten:', modelData);
+                            console.log('  Model data received:', modelData);
                             // Store end positions for plot
                             const endData = (modelData.data || {}).end || {};
                             console.log('  endData:', endData);
                             window.uploadedModelData[model.key] = {
+                                x: endData.x || [],
                                 y: endData.y || [],
                                 z: endData.z || [],
                                 color: model.color,
@@ -2113,7 +2764,7 @@ var modelColors = {'normal': '#00d4ff', 'gaps': 'red', 'holes': 'blue', 'cable':
                                 window.trajectoryData[model.key] = modelData.trajectories;
                             }
                         } else {
-                            console.error('  Fehler: Status', modelResp.status);
+                            console.error('  Request failed with status', modelResp.status);
                         }
                     } catch(e) {
                         console.warn('Could not load data for', model.key, e);
@@ -2125,8 +2776,12 @@ var modelColors = {'normal': '#00d4ff', 'gaps': 'red', 'holes': 'blue', 'cable':
                 // Reset fixed axis range so it gets recomputed from new data
                 window.plotAxisRange = null;
 
-                // Init scrubber max time from trajectory data (like copy4)
-                let posMaxTime = 0;
+                // Recompute the max ion flight time from the freshly loaded trajectory data.
+                // NOTE: this deliberately reuses the shared global `posMaxTime` (declared once,
+                // near the time-scrubber controls) rather than a local shadow, so the scrubber's
+                // "End" label and the detector-impact detection in getModelPositions() always
+                // agree with the data that's actually loaded (preloaded demos or uploads alike).
+                posMaxTime = 0;
                 for (const key of Object.keys(window.trajectoryData || {})) {
                     for (const ionKey of Object.keys(window.trajectoryData[key])) {
                         const steps = window.trajectoryData[key][ionKey];
@@ -2136,13 +2791,13 @@ var modelColors = {'normal': '#00d4ff', 'gaps': 'red', 'holes': 'blue', 'cable':
                         }
                     }
                 }
-                window.posMaxTime = posMaxTime;
                 const scrubber = document.getElementById('posTimeScrubber');
                 if (scrubber && posMaxTime > 0) {
                     scrubber.max   = posMaxTime * 1000;
                     scrubber.value = posMaxTime * 1000;
                 }
                 posCurrentTime = posMaxTime > 0 ? posMaxTime : -1;
+                updatePositionTimeLabel();
 
                 // Show end positions initially (time = -1)
                 renderUploadedPlot(-1);
@@ -2154,7 +2809,12 @@ var modelColors = {'normal': '#00d4ff', 'gaps': 'red', 'holes': 'blue', 'cable':
                 }
 
             } catch (err) {
-                container.innerHTML = '<span style="color: #ff6b6b;">Fehler beim Laden: ' + err.message + '</span>';
+                const errorState = document.createElement('p');
+                errorState.className = 'empty-state';
+                errorState.textContent = 'Could not load models: ' + err.message;
+                container.replaceChildren(errorState);
+                updateModelSelectionSummary();
+                showToast('Could not load the model list.', 'error');
             }
         }
 

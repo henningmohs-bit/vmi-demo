@@ -3,3 +3,8 @@ __pycache__/
 uploaded_models/
 Previous design/
 Slot-free design/
+CAD/
+Chamber stl/
+*.PA*
+demoresult
+*.tmp
