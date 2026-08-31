@@ -3783,4 +3783,3 @@ if __name__ == '__main__':
             time.sleep(1)
     except KeyboardInterrupt:
         print("\nServer stopped.")
-preload_demo_models()
