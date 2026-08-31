@@ -117,7 +117,6 @@ NEXT_COLOR_INDEX = 0
 # Demo datasets preloaded on startup (conference setup)
 BASE_DIR = Path(__file__).resolve().parent
 DEMO_MODEL_FOLDERS = [
-    ('Previous design', BASE_DIR / 'Chamber stl' / 'previous', 'result'),
     ('Optimized design', BASE_DIR / 'Chamber stl' / 'optimized', 'result'),
 ]
 # Electrode colors for 3D viewer (distinct colors for each electrode)
